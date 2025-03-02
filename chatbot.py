@@ -29,90 +29,104 @@ def get_base64_encoded_image(image_path):
 
 # Set page config
 st.set_page_config(
-    page_title="Enterprise Assistant",
-    page_icon="⚡",
+    page_title="Personal AI Assistant",
+    page_icon="✨",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Define professional color scheme
-primary_color = "#2C3E50"    # Dark blue/slate
-secondary_color = "#3498DB"  # Blue
-accent_color = "#ECF0F1"     # Light gray
-text_color = "#2C3E50"       # Dark blue/slate
-light_bg = "#FFFFFF"         # White
-message_bg_user = "#F8F9FA"  # Very light gray
-message_bg_assistant = "#EBF5FB"  # Very light blue
+# Define a cohesive color scheme
+primary_color = "#6C63FF"     # Purple
+secondary_color = "#8A84FF"   # Lighter purple
+tertiary_color = "#F0EEFF"    # Very light purple
+text_color = "#333333"        # Dark gray for text
+bg_color = "#FCFCFF"          # Off-white with slight purple tint
+accent_color = "#FF9190"      # Soft coral accent
 
-# Inject custom CSS for professional UI
+# Inject custom CSS for personal UI
 st.markdown(
     f"""
     <style>
         /* Overall app styling */
         .stApp {{
-            background-color: #F5F7F9;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: {bg_color};
+            font-family: 'Poppins', 'Segoe UI', 'Roboto', sans-serif;
         }}
         
         /* Scrollbar styling */
         ::-webkit-scrollbar {{
-            width: 6px;
-            height: 6px;
+            width: 8px;
+            height: 8px;
         }}
         
         ::-webkit-scrollbar-track {{
-            background: #F1F1F1;
-            border-radius: 4px;
+            background: {tertiary_color};
+            border-radius: 10px;
         }}
         
         ::-webkit-scrollbar-thumb {{
-            background: #CBD5E0;
-            border-radius: 4px;
+            background: {secondary_color};
+            border-radius: 10px;
         }}
         
         ::-webkit-scrollbar-thumb:hover {{
-            background: #A0AEC0;
+            background: {primary_color};
         }}
         
         /* Header Styling */
         .header-container {{
-            padding: 20px 0 10px 0;
-            border-bottom: 1px solid #E2E8F0;
+            text-align: center;
+            padding: 20px 0 15px 0;
             margin-bottom: 20px;
-            background-color: {light_bg};
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(108, 99, 255, 0.1);
         }}
         
         .header-title {{
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-size: 1.8rem;
+            font-weight: 700;
             color: {primary_color};
             margin: 0;
         }}
         
+        .header-emoji {{
+            font-size: 1.8rem;
+            margin: 0 5px;
+        }}
+        
         .header-subtitle {{
             font-size: 0.9rem;
-            color: #718096;
+            color: {text_color};
+            opacity: 0.8;
             margin-top: 5px;
         }}
         
         /* Stats bar styling */
         .stats-container {{
             display: flex;
-            gap: 15px;
+            justify-content: center;
+            gap: 20px;
             margin-bottom: 20px;
             padding: 10px 0;
-            border-bottom: 1px solid #E2E8F0;
+            border-radius: 12px;
+            background-color: white;
+            box-shadow: 0 4px 10px rgba(108, 99, 255, 0.1);
         }}
         
         .stat-item {{
             display: flex;
             align-items: center;
-            font-size: 0.8rem;
-            color: #718096;
+            font-size: 0.85rem;
+            background-color: {tertiary_color};
+            padding: 8px 15px;
+            border-radius: 20px;
         }}
         
         .stat-label {{
             margin-right: 5px;
+            color: {text_color};
+            opacity: 0.7;
         }}
         
         .stat-value {{
@@ -122,48 +136,45 @@ st.markdown(
         
         /* Chat Container Styling */
         .chat-container {{
-            background-color: {light_bg};
+            background-color: white;
             padding: 20px;
-            border-radius: 6px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(108, 99, 255, 0.1);
             margin-bottom: 20px;
             height: 60vh;
             overflow-y: auto;
-            border: 1px solid #E2E8F0;
         }}
         
         /* User's message styling */
         .user-message {{
-            background-color: {message_bg_user};
-            border-radius: 6px;
+            background-color: {primary_color};
+            border-radius: 18px 18px 0 18px;
             padding: 12px 16px;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             font-size: 0.95rem;
-            color: {text_color};
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            color: white;
+            box-shadow: 0 2px 5px rgba(108, 99, 255, 0.2);
             align-self: flex-end;
             max-width: 85%;
             word-wrap: break-word;
             position: relative;
             margin-left: auto;
-            border-left: 3px solid {secondary_color};
         }}
         
         /* Assistant's message styling */
         .assistant-message {{
-            background-color: {message_bg_assistant};
-            border-radius: 6px;
+            background-color: {tertiary_color};
+            border-radius: 18px 18px 18px 0;
             padding: 12px 16px;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             font-size: 0.95rem;
             color: {text_color};
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 5px rgba(108, 99, 255, 0.1);
             align-self: flex-start;
             max-width: 85%;
             word-wrap: break-word;
             position: relative;
             margin-right: auto;
-            border-left: 3px solid {primary_color};
         }}
         
         /* Message metadata styling */
@@ -177,11 +188,11 @@ st.markdown(
         /* Sender styling */
         .sender {{
             font-weight: 600;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
         }}
         
         .user-sender {{
-            color: {secondary_color};
+            color: white;
         }}
         
         .assistant-sender {{
@@ -190,19 +201,25 @@ st.markdown(
         
         /* Timestamp styling */
         .timestamp {{
-            font-size: 0.7rem;
-            color: #A0AEC0;
+            font-size: 0.75rem;
+        }}
+        
+        .user-timestamp {{
+            color: rgba(255, 255, 255, 0.8);
+        }}
+        
+        .assistant-timestamp {{
+            color: rgba(51, 51, 51, 0.6);
         }}
         
         /* Typing indicator */
         .typing-indicator {{
-            background-color: {message_bg_assistant};
-            border-radius: 6px;
-            padding: 12px 16px;
-            margin-bottom: 12px;
+            background-color: {tertiary_color};
+            border-radius: 18px 18px 18px 0;
+            padding: 15px;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
-            border-left: 3px solid {primary_color};
             width: fit-content;
         }}
         
@@ -210,60 +227,62 @@ st.markdown(
             height: 8px;
             width: 8px;
             margin: 0 2px;
-            background-color: #A0AEC0;
+            background-color: {primary_color};
             border-radius: 50%;
             opacity: 0.6;
         }}
         
         .typing-indicator .dot:nth-child(1) {{
-            animation: pulse 1.2s infinite 0.1s;
+            animation: bounce 1.2s infinite 0.1s;
         }}
         
         .typing-indicator .dot:nth-child(2) {{
-            animation: pulse 1.2s infinite 0.3s;
+            animation: bounce 1.2s infinite 0.3s;
         }}
         
         .typing-indicator .dot:nth-child(3) {{
-            animation: pulse 1.2s infinite 0.5s;
+            animation: bounce 1.2s infinite 0.5s;
         }}
         
-        @keyframes pulse {{
-            0%, 100% {{ transform: scale(1); opacity: 0.6; }}
-            50% {{ transform: scale(1.1); opacity: 0.9; }}
+        @keyframes bounce {{
+            0%, 100% {{ transform: translateY(0); opacity: 0.6; }}
+            50% {{ transform: translateY(-5px); opacity: 0.9; }}
         }}
         
         /* Input area styling */
         .input-container {{
-            background-color: {light_bg};
+            background-color: white;
             padding: 15px;
-            border-radius: 6px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(108, 99, 255, 0.1);
+            display: flex;
+            align-items: center;
         }}
         
         /* Input Styling */
         .stTextInput input, .stChatInput input {{
-            border-radius: 6px !important;
-            border: 1px solid #E2E8F0 !important;
-            padding: 10px 14px !important;
+            border-radius: 25px !important;
+            border: 2px solid {tertiary_color} !important;
+            padding: 12px 20px !important;
             font-size: 0.95rem !important;
             color: {text_color} !important;
             box-shadow: none !important;
+            transition: all 0.3s ease !important;
         }}
         
         .stTextInput input:focus, .stChatInput input:focus {{
-            border-color: {secondary_color} !important;
-            box-shadow: 0 0 0 1px {secondary_color} !important;
+            border-color: {primary_color} !important;
+            box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.1) !important;
         }}
         
         /* Footer styling */
         .footer {{
             text-align: center;
-            font-size: 0.75rem;
-            color: #A0AEC0;
+            font-size: 0.8rem;
+            color: {text_color};
+            opacity: 0.7;
             padding: 15px 0;
-            border-top: 1px solid #E2E8F0;
-            margin-top: 30px;
+            margin-top: 20px;
         }}
         
         /* Hide Streamlit branding */
@@ -274,80 +293,121 @@ st.markdown(
         code {{
             border-radius: 4px;
             padding: 2px 5px;
-            background-color: #F7FAFC;
+            background-color: {tertiary_color};
             font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
             font-size: 0.85em;
-            color: #2D3748;
+            color: {primary_color};
         }}
         
         pre {{
-            background-color: #F7FAFC;
-            border-radius: 4px;
-            padding: 10px;
+            background-color: {tertiary_color};
+            border-radius: 8px;
+            padding: 12px;
             overflow-x: auto;
-            border: 1px solid #EDF2F7;
         }}
         
         /* Sidebar styling */
         .css-1cypcdb, .css-163ttbj, .css-1ope8sv {{
-            background-color: {light_bg};
+            background-color: white;
         }}
         
         .css-pkbazv {{
             color: {primary_color} !important;
         }}
         
-        /* Two-column layout */
+        /* Two-column layout for larger screens */
         .main-content {{
             display: flex;
             gap: 20px;
         }}
         
         .chat-column {{
-            flex: 3;
+            flex: 7;
         }}
         
         .info-column {{
-            flex: 1;
-            min-width: 220px;
+            flex: 3;
         }}
         
-        .info-card {{
-            background-color: {light_bg};
-            border-radius: 6px;
+        /* Cards styling */
+        .card {{
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(108, 99, 255, 0.1);
             padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            border: 1px solid #E2E8F0;
+            margin-bottom: 20px;
         }}
         
-        .info-card-header {{
-            font-size: 0.9rem;
+        .card-header {{
+            font-size: 1rem;
             font-weight: 600;
             color: {primary_color};
-            margin-bottom: 10px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #E2E8F0;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid {tertiary_color};
         }}
         
-        .info-list {{
-            font-size: 0.8rem;
+        /* Features list */
+        .features-list {{
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
         }}
         
-        .info-item {{
-            display: flex;
-            justify-content: space-between;
-            padding: 5px 0;
-            border-bottom: 1px solid #F7FAFC;
-        }}
-        
-        .info-label {{
-            color: #718096;
-        }}
-        
-        .info-value {{
-            font-weight: 500;
+        .feature-item {{
+            background-color: {tertiary_color};
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.85rem;
             color: {text_color};
+            display: flex;
+            align-items: center;
+            transition: transform 0.2s;
+        }}
+        
+        .feature-item:hover {{
+            transform: translateY(-3px);
+            background-color: rgba(108, 99, 255, 0.1);
+        }}
+        
+        .feature-icon {{
+            margin-right: 8px;
+            color: {primary_color};
+        }}
+        
+        /* Example prompts */
+        .example-prompt {{
+            background-color: {tertiary_color};
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            color: {text_color};
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }}
+        
+        .example-prompt:hover {{
+            border-left: 3px solid {primary_color};
+            background-color: rgba(108, 99, 255, 0.1);
+        }}
+        
+        /* Buttons */
+        .stButton > button {{
+            background-color: {primary_color} !important;
+            color: white !important;
+            border-radius: 25px !important;
+            font-weight: 500 !important;
+            border: none !important;
+            padding: 10px 25px !important;
+            transition: all 0.3s ease !important;
+        }}
+        
+        .stButton > button:hover {{
+            background-color: {secondary_color} !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 10px rgba(108, 99, 255, 0.3) !important;
         }}
     </style>
     """,
@@ -362,68 +422,94 @@ if "conversation_started" not in st.session_state:
 if "message_count" not in st.session_state:
     st.session_state.message_count = 0
 
-# Get current time
-current_time = datetime.now().strftime("%H:%M")
-current_date = datetime.now().strftime("%b %d, %Y")
+# Get current time and date
+current_time = datetime.now().strftime("%I:%M %p")
+current_date = datetime.now().strftime("%A, %b %d")
 
 # Create a sidebar with additional controls
 with st.sidebar:
-    st.markdown('<div style="text-align: center; padding: 10px 0;"><h3>⚡ Enterprise AI</h3></div>', unsafe_allow_html=True)
-    st.markdown("---")
+    st.markdown(f'<div style="text-align: center; padding: 15px 0;"><h3 style="color: {primary_color};">✨ AI Assistant</h3></div>', unsafe_allow_html=True)
     
-    # Model selection (for future use)
-    model = st.selectbox(
-        "Model",
-        ["Llama-3.3-70B", "Llama-3-70B", "Future models..."],
-        index=0,
-        disabled=True
+    # Card for suggested prompts
+    st.markdown(
+        f'''
+        <div class="card">
+            <div class="card-header">Try asking me...</div>
+            <div class="example-prompts">
+                <div class="example-prompt" onclick="selectPrompt('Tell me a fun fact about space')">Tell me a fun fact about space</div>
+                <div class="example-prompt" onclick="selectPrompt('What should I cook for dinner?')">What should I cook for dinner?</div>
+                <div class="example-prompt" onclick="selectPrompt('Help me plan my weekend')">Help me plan my weekend</div>
+                <div class="example-prompt" onclick="selectPrompt('Recommend a book to read')">Recommend a book to read</div>
+            </div>
+        </div>
+        
+        <script>
+        function selectPrompt(text) {{
+            const textareas = parent.document.querySelectorAll('textarea');
+            const chatInput = textareas[textareas.length - 1];
+            chatInput.value = text;
+            chatInput.dispatchEvent(new Event('input', {{ bubbles: true }}));
+        }}
+        </script>
+        ''',
+        unsafe_allow_html=True
     )
     
-    temperature = st.slider(
-        "Temperature",
-        min_value=0.0,
-        max_value=1.0,
-        value=0.5,
-        step=0.1,
-        format="%.1f",
-        disabled=True,
-        help="Controls randomness of responses. Lower values are more deterministic."
-    )
-    
-    st.markdown("---")
-    
-    # Example prompts
-    st.markdown("### Quick Prompts")
+    # Example prompt buttons (fallback for the JS version)
+    st.markdown("### Quick Ideas")
     example_prompts = [
-        "Summarize the latest quarterly report",
-        "Draft an email to the team about the new project",
-        "Help me troubleshoot an API issue",
-        "Explain complex data in simple terms"
+        "Tell me a fun fact about space",
+        "What should I cook for dinner?",
+        "Help me plan my weekend",
+        "Recommend a book to read"
     ]
     
     for prompt in example_prompts:
         if st.button(prompt, key=f"btn_{prompt}"):
-            # Add to existing messages and trigger chat
             st.session_state.prompt_value = prompt
-
-    st.markdown("---")
     
-    # About section
-    st.markdown("### About")
+    # Card for features
     st.markdown(
-        """
-        Enterprise AI Assistant powered by Groq's Llama-3.3-70B model.
-        
-        For assistance, contact IT support.
-        """
+        f'''
+        <div class="card">
+            <div class="card-header">My Capabilities</div>
+            <div class="features-list">
+                <div class="feature-item">
+                    <span class="feature-icon">🧠</span>
+                    Answer Questions
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">📝</span>
+                    Write Content
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">💡</span>
+                    Creative Ideas
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">📚</span>
+                    Summarize Text
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🎮</span>
+                    Fun & Games
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🧩</span>
+                    Solve Problems
+                </div>
+            </div>
+        </div>
+        ''',
+        unsafe_allow_html=True
     )
 
 # Create header section
 st.markdown(
     f'''
     <div class="header-container">
-        <h1 class="header-title">Enterprise AI Assistant</h1>
-        <p class="header-subtitle">Powered by Llama 3.3 | {current_date}</p>
+        <h1 class="header-title">Personal AI Assistant <span class="header-emoji">✨</span></h1>
+        <p class="header-subtitle">Your friendly AI companion powered by Llama 3.3</p>
     </div>
     ''', 
     unsafe_allow_html=True
@@ -435,26 +521,22 @@ st.markdown(
     <div class="stats-container">
         <div class="stat-item">
             <span class="stat-label">Model:</span>
-            <span class="stat-value">Llama-3.3-70B</span>
+            <span class="stat-value">Llama 3.3</span>
         </div>
         <div class="stat-item">
-            <span class="stat-label">Messages:</span>
+            <span class="stat-label">Chats:</span>
             <span class="stat-value">{st.session_state.message_count}</span>
         </div>
         <div class="stat-item">
-            <span class="stat-label">Temperature:</span>
-            <span class="stat-value">0.5</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Status:</span>
-            <span class="stat-value">Active</span>
+            <span class="stat-label">Date:</span>
+            <span class="stat-value">{current_date}</span>
         </div>
     </div>
     ''',
     unsafe_allow_html=True
 )
 
-# Main content area with two columns
+# Main content area with two columns for larger screens
 st.markdown('<div class="main-content">', unsafe_allow_html=True)
 
 # Left column - Chat interface
@@ -465,7 +547,7 @@ if not st.session_state.conversation_started:
     st.session_state.conversation_started = True
     welcome_message = {
         "role": "assistant", 
-        "content": "Welcome to the Enterprise AI Assistant. How can I help you with your business needs today?",
+        "content": "Hi there! 👋 I'm your personal AI assistant. I can help with questions, creative writing, recommendations, and much more. What can I help you with today?",
         "timestamp": current_time
     }
     st.session_state.messages.append(welcome_message)
@@ -484,7 +566,7 @@ for message in st.session_state.messages:
             <div class="user-message">
                 <div class="message-metadata">
                     <div class="sender user-sender">You</div>
-                    <div class="timestamp">{timestamp}</div>
+                    <div class="timestamp user-timestamp">{timestamp}</div>
                 </div>
                 {message["content"]}
             </div>
@@ -497,7 +579,7 @@ for message in st.session_state.messages:
             <div class="assistant-message">
                 <div class="message-metadata">
                     <div class="sender assistant-sender">AI Assistant</div>
-                    <div class="timestamp">{timestamp}</div>
+                    <div class="timestamp assistant-timestamp">{timestamp}</div>
                 </div>
                 {message["content"]}
             </div>
@@ -509,99 +591,13 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 # User Input Section
 st.markdown('<div class="input-container">', unsafe_allow_html=True)
-prompt = st.chat_input("Type your message here...", key="chat_input")
+prompt = st.chat_input("Ask me anything...", key="chat_input")
 st.markdown('</div>', unsafe_allow_html=True)
 
 # Close chat column
 st.markdown('</div>', unsafe_allow_html=True)
 
-# Right column - Additional info
-st.markdown('<div class="info-column">', unsafe_allow_html=True)
-
-# Model information card
-st.markdown(
-    '''
-    <div class="info-card">
-        <div class="info-card-header">Model Information</div>
-        <div class="info-list">
-            <div class="info-item">
-                <span class="info-label">Model</span>
-                <span class="info-value">Llama-3.3</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Version</span>
-                <span class="info-value">70B</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Provider</span>
-                <span class="info-value">Groq</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Max Tokens</span>
-                <span class="info-value">4,096</span>
-            </div>
-        </div>
-    </div>
-    ''',
-    unsafe_allow_html=True
-)
-
-# Session information card
-st.markdown(
-    f'''
-    <div class="info-card">
-        <div class="info-card-header">Session</div>
-        <div class="info-list">
-            <div class="info-item">
-                <span class="info-label">Messages</span>
-                <span class="info-value">{st.session_state.message_count}</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Started</span>
-                <span class="info-value">{current_time}</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Date</span>
-                <span class="info-value">{current_date}</span>
-            </div>
-        </div>
-    </div>
-    ''',
-    unsafe_allow_html=True
-)
-
-# Capabilities information card
-st.markdown(
-    '''
-    <div class="info-card">
-        <div class="info-card-header">Capabilities</div>
-        <div class="info-list">
-            <div class="info-item">
-                <span class="info-label">Data Analysis</span>
-                <span class="info-value">✓</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Content Creation</span>
-                <span class="info-value">✓</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Code Assistance</span>
-                <span class="info-value">✓</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Problem Solving</span>
-                <span class="info-value">✓</span>
-            </div>
-        </div>
-    </div>
-    ''',
-    unsafe_allow_html=True
-)
-
-# Close info column
-st.markdown('</div>', unsafe_allow_html=True)
-
-# Close main content div
+# Right column content - removed for this personal version for simplicity
 st.markdown('</div>', unsafe_allow_html=True)
 
 # Check if there's a prompt value from sidebar buttons
@@ -612,7 +608,7 @@ if "prompt_value" in st.session_state and st.session_state.prompt_value:
 
 if prompt:
     # Get current time
-    current_time = datetime.now().strftime("%H:%M")
+    current_time = datetime.now().strftime("%I:%M %p")
     
     # Display user message
     st.session_state.messages.append({
@@ -629,7 +625,7 @@ if prompt:
     st.session_state.messages.append({
         "role": "assistant", 
         "content": response,
-        "timestamp": datetime.now().strftime("%H:%M")
+        "timestamp": datetime.now().strftime("%I:%M %p")
     })
     st.session_state.message_count += 1
     
@@ -638,9 +634,9 @@ if prompt:
 
 # Footer
 st.markdown(
-    '''
+    f'''
     <div class="footer">
-        Enterprise AI Assistant | Powered by Groq | © 2025 Your Company Name
+        Personal AI Assistant | Powered by Llama 3.3 via Groq | Made with ❤️
     </div>
     ''', 
     unsafe_allow_html=True

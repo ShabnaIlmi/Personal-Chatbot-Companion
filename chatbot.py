@@ -86,7 +86,7 @@ st.markdown(
         .header-title {{
             font-size: 1.8rem;
             font-weight: 700;
-            color: {primary_color};
+            color: black;
             margin: 0;
         }}
         
@@ -110,10 +110,8 @@ st.markdown(
             margin-bottom: 20px;
             padding: 10px 0;
             border-radius: 12px;
-            background-color: white;
-            box-shadow: 0 4px 10px rgba(108, 99, 255, 0.1);
         }}
-        
+
         .stat-item {{
             display: flex;
             align-items: center;
@@ -122,18 +120,18 @@ st.markdown(
             padding: 8px 15px;
             border-radius: 20px;
         }}
-        
+
         .stat-label {{
             margin-right: 5px;
             color: {text_color};
             opacity: 0.7;
         }}
-        
+
         .stat-value {{
             font-weight: 600;
-            color: {primary_color};
+            color: black;
         }}
-        
+            
         /* Chat Container Styling */
         .chat-container {{
             background-color: white;
@@ -409,6 +407,23 @@ st.markdown(
             transform: translateY(-2px) !important;
             box-shadow: 0 4px 10px rgba(108, 99, 255, 0.3) !important;
         }}
+        
+        /* Enhanced animations */
+        .user-message, .assistant-message {{
+            animation: fadeIn 0.3s ease-in-out;
+        }}
+        
+        @keyframes fadeIn {{
+            from {{ opacity: 0; transform: translateY(10px); }}
+            to {{ opacity: 1; transform: translateY(0); }}
+        }}
+        
+        /* Enhanced example prompts */
+        .example-prompts {{
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }}
     </style>
     """,
     unsafe_allow_html=True
@@ -597,7 +612,7 @@ st.markdown('</div>', unsafe_allow_html=True)
 # Close chat column
 st.markdown('</div>', unsafe_allow_html=True)
 
-# Right column content - removed for this personal version for simplicity
+# Close main content div
 st.markdown('</div>', unsafe_allow_html=True)
 
 # Check if there's a prompt value from sidebar buttons

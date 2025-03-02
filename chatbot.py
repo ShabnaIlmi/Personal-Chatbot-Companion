@@ -2,7 +2,6 @@ from llama_index.llms.groq import Groq
 import streamlit as st
 import os
 import base64
-import time
 from datetime import datetime
 
 # Load API key from Streamlit secrets
@@ -39,7 +38,7 @@ st.set_page_config(
 # Try to get background image - with fallback
 try:
     # Define the image path - updated to correct folder structure
-    image_path = os.path.join("assets", "images", "background_image.jpg")
+    image_path = os.path.join("assets", "images", "background.jpg")
     # Get base64 encoded image
     img_data = get_base64_encoded_image(image_path)
     background_style = f"""
@@ -489,8 +488,8 @@ if prompt:
     })
     st.session_state.message_count += 1
     
-    # Force a rerun to display the new messages
-    st.experimental_rerun()
+    # Removed experimental_rerun() - Streamlit will automatically rerun
+    # when the session state changes
 
 # Footer
 st.markdown(

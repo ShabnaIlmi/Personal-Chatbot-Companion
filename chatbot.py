@@ -1,9 +1,12 @@
 from llama_index.llms.groq import Groq
 import streamlit as st
 
+# Load API key from Streamlit secrets
+api_key = st.secrets["groq"]["api_key"]
+
 # Function to generate chatbot response
 def chat_qa(prompt):
-    ilm = Groq(model="llama-3.3-70b-versatile", api_key="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", temperature=0.5)
+    ilm = Groq(model="llama-3.3-70b-versatile", api_key=api_key, temperature=0.5)
     response = ilm.complete(prompt)
     return response
 

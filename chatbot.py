@@ -78,7 +78,7 @@ st.markdown(
             text-align: center;
             padding: 20px 0 15px 0;
             margin-bottom: 20px;
-            background-color: white;
+            background-color: black;
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(108, 99, 255, 0.1);
         }}

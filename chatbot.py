@@ -11,7 +11,7 @@ api_key = st.secrets["groq"]["api_key"]
 def chat_qa(prompt):
     # Add a typing indicator
     message_placeholder = st.empty()
-    message_placeholder.markdown('<div class="typing-indicator"><span></span><span></span><span></span></div>', unsafe_allow_html=True)
+    message_placeholder.markdown('<div class="typing-indicator"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>', unsafe_allow_html=True)
     
     # Get response from Groq
     ilm = Groq(model="llama-3.3-70b-versatile", api_key=api_key, temperature=0.5)
@@ -29,346 +29,325 @@ def get_base64_encoded_image(image_path):
 
 # Set page config
 st.set_page_config(
-    page_title="AI Assistant",
-    page_icon="🤖",
-    layout="centered",
-    initial_sidebar_state="collapsed"
+    page_title="Enterprise Assistant",
+    page_icon="⚡",
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
-# Try to get background image - with fallback
-try:
-    # Define the image path - updated to correct folder structure
-    image_path = os.path.join("assets", "images", "background.jpg")
-    # Get base64 encoded image
-    img_data = get_base64_encoded_image(image_path)
-    background_style = f"""
-    background-image: url('data:image/jpg;base64,{img_data}');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    """
-except Exception as e:
-    # Fallback to a premium gradient background if image loading fails
-    background_style = """
-    background: linear-gradient(135deg, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%);
-    """
+# Define professional color scheme
+primary_color = "#2C3E50"    # Dark blue/slate
+secondary_color = "#3498DB"  # Blue
+accent_color = "#ECF0F1"     # Light gray
+text_color = "#2C3E50"       # Dark blue/slate
+light_bg = "#FFFFFF"         # White
+message_bg_user = "#F8F9FA"  # Very light gray
+message_bg_assistant = "#EBF5FB"  # Very light blue
 
-# Define theme colors (can be customized)
-primary_color = "#4CAF50"
-secondary_color = "#2E7D32"
-accent_color = "#81C784"
-text_color = "#333333"
-light_bg = "rgba(255, 255, 255, 0.92)"
-
-# Inject custom CSS for enhanced UI/UX
+# Inject custom CSS for professional UI
 st.markdown(
     f"""
     <style>
-        /* Background Styling */
+        /* Overall app styling */
         .stApp {{
-            {background_style}
-            padding: 0;
+            background-color: #F5F7F9;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }}
         
         /* Scrollbar styling */
         ::-webkit-scrollbar {{
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
         }}
         
         ::-webkit-scrollbar-track {{
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+            background: #F1F1F1;
+            border-radius: 4px;
         }}
         
         ::-webkit-scrollbar-thumb {{
-            background: {primary_color};
-            border-radius: 10px;
+            background: #CBD5E0;
+            border-radius: 4px;
         }}
         
         ::-webkit-scrollbar-thumb:hover {{
-            background: {secondary_color};
+            background: #A0AEC0;
         }}
         
-        /* Title Styling */
-        .title-container {{
-            text-align: center;
-            padding: 20px 0;
+        /* Header Styling */
+        .header-container {{
+            padding: 20px 0 10px 0;
+            border-bottom: 1px solid #E2E8F0;
             margin-bottom: 20px;
             background-color: {light_bg};
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(5px);
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-            border-left: 5px solid {primary_color};
-            border-right: 5px solid {primary_color};
         }}
         
-        .title-text {{
-            font-family: 'Poppins', 'Arial', sans-serif;
-            font-size: 2.5em;
+        .header-title {{
+            font-size: 1.5rem;
+            font-weight: 600;
             color: {primary_color};
             margin: 0;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }}
         
-        .subtitle-text {{
-            font-family: 'Poppins', 'Arial', sans-serif;
-            font-size: 1.2em;
-            color: {text_color};
+        .header-subtitle {{
+            font-size: 0.9rem;
+            color: #718096;
             margin-top: 5px;
-            opacity: 0.8;
+        }}
+        
+        /* Stats bar styling */
+        .stats-container {{
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 10px 0;
+            border-bottom: 1px solid #E2E8F0;
+        }}
+        
+        .stat-item {{
+            display: flex;
+            align-items: center;
+            font-size: 0.8rem;
+            color: #718096;
+        }}
+        
+        .stat-label {{
+            margin-right: 5px;
+        }}
+        
+        .stat-value {{
+            font-weight: 600;
+            color: {primary_color};
         }}
         
         /* Chat Container Styling */
         .chat-container {{
-            max-width: 800px;
-            margin: 0 auto 20px auto;
             background-color: {light_bg};
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(5px);
-            min-height: 400px;
-            max-height: 600px;
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            height: 60vh;
             overflow-y: auto;
-            border-left: 5px solid {primary_color};
-            border-right: 5px solid {primary_color};
-            display: flex;
-            flex-direction: column;
+            border: 1px solid #E2E8F0;
         }}
         
         /* User's message styling */
         .user-message {{
-            background-color: #f1f1f1;
-            border-radius: 18px 18px 0 18px;
-            padding: 12px 18px;
-            margin-bottom: 15px;
-            font-size: 1.1em;
+            background-color: {message_bg_user};
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
             color: {text_color};
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
             align-self: flex-end;
-            max-width: 80%;
+            max-width: 85%;
             word-wrap: break-word;
             position: relative;
             margin-left: auto;
-            border-top: 1px solid #e0e0e0;
-            animation: slideInRight 0.3s ease-out forwards;
-        }}
-        
-        @keyframes slideInRight {{
-            from {{ transform: translateX(20px); opacity: 0; }}
-            to {{ transform: translateX(0); opacity: 1; }}
+            border-left: 3px solid {secondary_color};
         }}
         
         /* Assistant's message styling */
         .assistant-message {{
-            background-color: #e8f5e9;
-            border-radius: 18px 18px 18px 0;
-            padding: 12px 18px;
-            margin-bottom: 15px;
-            font-size: 1.1em;
+            background-color: {message_bg_assistant};
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
             color: {text_color};
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
             align-self: flex-start;
-            max-width: 80%;
+            max-width: 85%;
             word-wrap: break-word;
             position: relative;
             margin-right: auto;
-            border-top: 1px solid #c8e6c9;
-            animation: slideInLeft 0.3s ease-out forwards;
+            border-left: 3px solid {primary_color};
         }}
         
-        @keyframes slideInLeft {{
-            from {{ transform: translateX(-20px); opacity: 0; }}
-            to {{ transform: translateX(0); opacity: 1; }}
+        /* Message metadata styling */
+        .message-metadata {{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }}
+        
+        /* Sender styling */
+        .sender {{
+            font-weight: 600;
+            font-size: 0.8rem;
+        }}
+        
+        .user-sender {{
+            color: {secondary_color};
+        }}
+        
+        .assistant-sender {{
+            color: {primary_color};
         }}
         
         /* Timestamp styling */
         .timestamp {{
-            font-size: 0.75em;
-            color: #757575;
-            margin-top: 5px;
-            text-align: right;
-        }}
-        
-        /* Message sender styling */
-        .sender {{
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-size: 0.7rem;
+            color: #A0AEC0;
         }}
         
         /* Typing indicator */
         .typing-indicator {{
-            background-color: #e8f5e9;
-            border-radius: 18px 18px 18px 0;
-            padding: 15px 20px;
-            display: inline-block;
-            margin-bottom: 15px;
-            position: relative;
-            animation: slideInLeft 0.3s ease-out forwards;
-            align-self: flex-start;
+            background-color: {message_bg_assistant};
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            border-left: 3px solid {primary_color};
+            width: fit-content;
         }}
         
-        .typing-indicator span {{
-            height: 10px;
-            width: 10px;
-            float: left;
-            margin: 0 1px;
-            background-color: {primary_color};
-            display: block;
+        .typing-indicator .dot {{
+            height: 8px;
+            width: 8px;
+            margin: 0 2px;
+            background-color: #A0AEC0;
             border-radius: 50%;
-            opacity: 0.4;
+            opacity: 0.6;
         }}
         
-        .typing-indicator span:nth-of-type(1) {{
-            animation: 1s blink infinite 0.3333s;
+        .typing-indicator .dot:nth-child(1) {{
+            animation: pulse 1.2s infinite 0.1s;
         }}
         
-        .typing-indicator span:nth-of-type(2) {{
-            animation: 1s blink infinite 0.6666s;
+        .typing-indicator .dot:nth-child(2) {{
+            animation: pulse 1.2s infinite 0.3s;
         }}
         
-        .typing-indicator span:nth-of-type(3) {{
-            animation: 1s blink infinite 0.9999s;
+        .typing-indicator .dot:nth-child(3) {{
+            animation: pulse 1.2s infinite 0.5s;
         }}
         
-        @keyframes blink {{
-            50% {{ opacity: 1; }}
+        @keyframes pulse {{
+            0%, 100% {{ transform: scale(1); opacity: 0.6; }}
+            50% {{ transform: scale(1.1); opacity: 0.9; }}
         }}
         
         /* Input area styling */
         .input-container {{
-            max-width: 800px;
-            margin: 0 auto;
             background-color: {light_bg};
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(5px);
-            display: flex;
-            align-items: center;
-            border-left: 5px solid {primary_color};
-            border-right: 5px solid {primary_color};
+            padding: 15px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #E2E8F0;
         }}
         
         /* Input Styling */
         .stTextInput input, .stChatInput input {{
-            font-size: 1.2em;
-            border-radius: 25px !important;
-            padding: 12px 20px !important;
-            border: 2px solid {primary_color} !important;
-            width: 100%;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-radius: 6px !important;
+            border: 1px solid #E2E8F0 !important;
+            padding: 10px 14px !important;
+            font-size: 0.95rem !important;
+            color: {text_color} !important;
+            box-shadow: none !important;
         }}
         
         .stTextInput input:focus, .stChatInput input:focus {{
             border-color: {secondary_color} !important;
-            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2) !important;
-        }}
-        
-        /* Custom button styling */
-        .stButton > button {{
-            background-color: {primary_color};
-            color: white;
-            font-weight: bold;
-            border-radius: 25px;
-            padding: 12px 25px;
-            border: none;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 10px;
-        }}
-        
-        .stButton > button:hover {{
-            background-color: {secondary_color};
-            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.4);
-            transform: translateY(-2px);
-        }}
-        
-        /* Info cards */
-        .info-container {{
-            display: flex;
-            justify-content: space-between;
-            max-width: 800px;
-            margin: 0 auto 20px auto;
-            gap: 15px;
-        }}
-        
-        .info-card {{
-            background-color: {light_bg};
-            border-radius: 10px;
-            padding: 15px;
-            flex: 1;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(5px);
-            text-align: center;
-            border-top: 3px solid {primary_color};
-            transition: transform 0.3s ease;
-        }}
-        
-        .info-card:hover {{
-            transform: translateY(-5px);
-        }}
-        
-        .info-card-title {{
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: {primary_color};
-        }}
-        
-        .info-card-value {{
-            font-size: 1.2em;
-            color: {text_color};
+            box-shadow: 0 0 0 1px {secondary_color} !important;
         }}
         
         /* Footer styling */
         .footer {{
             text-align: center;
+            font-size: 0.75rem;
+            color: #A0AEC0;
+            padding: 15px 0;
+            border-top: 1px solid #E2E8F0;
             margin-top: 30px;
-            font-size: 0.9em;
-            color: rgba(255, 255, 255, 0.8);
-            padding: 10px;
         }}
         
         /* Hide Streamlit branding */
         #MainMenu {{visibility: hidden;}}
         footer {{visibility: hidden;}}
         
-        /* Emoji animations */
-        .emoji {{
-            display: inline-block;
-            animation: wave 1.8s infinite;
-        }}
-        
-        @keyframes wave {{
-            0% {{ transform: rotate(0deg); }}
-            10% {{ transform: rotate(14deg); }}
-            20% {{ transform: rotate(-8deg); }}
-            30% {{ transform: rotate(14deg); }}
-            40% {{ transform: rotate(-4deg); }}
-            50% {{ transform: rotate(10deg); }}
-            60% {{ transform: rotate(0deg); }}
-            100% {{ transform: rotate(0deg); }}
-        }}
-        
         /* Code block styling */
         code {{
-            border-radius: 5px;
+            border-radius: 4px;
             padding: 2px 5px;
-            background-color: rgba(0, 0, 0, 0.05);
-            font-family: 'Courier New', monospace;
+            background-color: #F7FAFC;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.85em;
+            color: #2D3748;
         }}
         
         pre {{
-            background-color: rgba(0, 0, 0, 0.05);
-            border-radius: 5px;
+            background-color: #F7FAFC;
+            border-radius: 4px;
             padding: 10px;
             overflow-x: auto;
+            border: 1px solid #EDF2F7;
+        }}
+        
+        /* Sidebar styling */
+        .css-1cypcdb, .css-163ttbj, .css-1ope8sv {{
+            background-color: {light_bg};
+        }}
+        
+        .css-pkbazv {{
+            color: {primary_color} !important;
+        }}
+        
+        /* Two-column layout */
+        .main-content {{
+            display: flex;
+            gap: 20px;
+        }}
+        
+        .chat-column {{
+            flex: 3;
+        }}
+        
+        .info-column {{
+            flex: 1;
+            min-width: 220px;
+        }}
+        
+        .info-card {{
+            background-color: {light_bg};
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #E2E8F0;
+        }}
+        
+        .info-card-header {{
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: {primary_color};
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #E2E8F0;
+        }}
+        
+        .info-list {{
+            font-size: 0.8rem;
+        }}
+        
+        .info-item {{
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #F7FAFC;
+        }}
+        
+        .info-label {{
+            color: #718096;
+        }}
+        
+        .info-value {{
+            font-weight: 500;
+            color: {text_color};
         }}
     </style>
     """,
@@ -383,91 +362,257 @@ if "conversation_started" not in st.session_state:
 if "message_count" not in st.session_state:
     st.session_state.message_count = 0
 
-# Custom title with HTML
+# Get current time
+current_time = datetime.now().strftime("%H:%M")
+current_date = datetime.now().strftime("%b %d, %Y")
+
+# Create a sidebar with additional controls
+with st.sidebar:
+    st.markdown('<div style="text-align: center; padding: 10px 0;"><h3>⚡ Enterprise AI</h3></div>', unsafe_allow_html=True)
+    st.markdown("---")
+    
+    # Model selection (for future use)
+    model = st.selectbox(
+        "Model",
+        ["Llama-3.3-70B", "Llama-3-70B", "Future models..."],
+        index=0,
+        disabled=True
+    )
+    
+    temperature = st.slider(
+        "Temperature",
+        min_value=0.0,
+        max_value=1.0,
+        value=0.5,
+        step=0.1,
+        format="%.1f",
+        disabled=True,
+        help="Controls randomness of responses. Lower values are more deterministic."
+    )
+    
+    st.markdown("---")
+    
+    # Example prompts
+    st.markdown("### Quick Prompts")
+    example_prompts = [
+        "Summarize the latest quarterly report",
+        "Draft an email to the team about the new project",
+        "Help me troubleshoot an API issue",
+        "Explain complex data in simple terms"
+    ]
+    
+    for prompt in example_prompts:
+        if st.button(prompt, key=f"btn_{prompt}"):
+            # Add to existing messages and trigger chat
+            st.session_state.prompt_value = prompt
+
+    st.markdown("---")
+    
+    # About section
+    st.markdown("### About")
+    st.markdown(
+        """
+        Enterprise AI Assistant powered by Groq's Llama-3.3-70B model.
+        
+        For assistance, contact IT support.
+        """
+    )
+
+# Create header section
 st.markdown(
-    '''
-    <div class="title-container">
-        <h1 class="title-text">AI Assistant <span class="emoji">🤖</span></h1>
-        <p class="subtitle-text">Your intelligent conversation partner powered by Groq</p>
+    f'''
+    <div class="header-container">
+        <h1 class="header-title">Enterprise AI Assistant</h1>
+        <p class="header-subtitle">Powered by Llama 3.3 | {current_date}</p>
     </div>
     ''', 
     unsafe_allow_html=True
 )
 
-# Display stats cards
+# Stats bar
 st.markdown(
     f'''
-    <div class="info-container">
-        <div class="info-card">
-            <div class="info-card-title">Model</div>
-            <div class="info-card-value">Llama-3.3-70B</div>
+    <div class="stats-container">
+        <div class="stat-item">
+            <span class="stat-label">Model:</span>
+            <span class="stat-value">Llama-3.3-70B</span>
         </div>
-        <div class="info-card">
-            <div class="info-card-title">Messages</div>
-            <div class="info-card-value">{st.session_state.message_count}</div>
+        <div class="stat-item">
+            <span class="stat-label">Messages:</span>
+            <span class="stat-value">{st.session_state.message_count}</span>
         </div>
-        <div class="info-card">
-            <div class="info-card-title">Temperature</div>
-            <div class="info-card-value">0.5</div>
+        <div class="stat-item">
+            <span class="stat-label">Temperature:</span>
+            <span class="stat-value">0.5</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Status:</span>
+            <span class="stat-value">Active</span>
         </div>
     </div>
     ''',
     unsafe_allow_html=True
 )
 
+# Main content area with two columns
+st.markdown('<div class="main-content">', unsafe_allow_html=True)
+
+# Left column - Chat interface
+st.markdown('<div class="chat-column">', unsafe_allow_html=True)
+
 # Welcome message when starting a new conversation
 if not st.session_state.conversation_started:
     st.session_state.conversation_started = True
-    current_time = datetime.now().strftime("%I:%M %p")
     welcome_message = {
         "role": "assistant", 
-        "content": "Hello! I'm your AI assistant powered by Llama 3.3. How can I help you today?",
+        "content": "Welcome to the Enterprise AI Assistant. How can I help you with your business needs today?",
         "timestamp": current_time
     }
     st.session_state.messages.append(welcome_message)
     st.session_state.message_count += 1
 
 # Create a container for chat messages
-with st.container():
-    st.markdown('<div class="chat-container">', unsafe_allow_html=True)
-    
-    # Display chat messages
-    for message in st.session_state.messages:
-        timestamp = message.get("timestamp", datetime.now().strftime("%I:%M %p"))
-        
-        if message["role"] == "user":
-            st.markdown(
-                f'''
-                <div class="user-message">
-                    <div class="sender">You</div>
-                    {message["content"]}
-                    <div class="timestamp">{timestamp}</div>
-                </div>
-                ''', 
-                unsafe_allow_html=True
-            )
-        else:
-            st.markdown(
-                f'''
-                <div class="assistant-message">
-                    <div class="sender">Assistant</div>
-                    {message["content"]}
-                    <div class="timestamp">{timestamp}</div>
-                </div>
-                ''', 
-                unsafe_allow_html=True
-            )
-    
-    st.markdown('</div>', unsafe_allow_html=True)
+st.markdown('<div class="chat-container">', unsafe_allow_html=True)
 
-# User Input Section (wrapped in a container for styling)
-st.markdown('<div class="input-container">', unsafe_allow_html=True)
-prompt = st.chat_input("Ask me anything...")
+# Display chat messages
+for message in st.session_state.messages:
+    timestamp = message.get("timestamp", current_time)
+    
+    if message["role"] == "user":
+        st.markdown(
+            f'''
+            <div class="user-message">
+                <div class="message-metadata">
+                    <div class="sender user-sender">You</div>
+                    <div class="timestamp">{timestamp}</div>
+                </div>
+                {message["content"]}
+            </div>
+            ''', 
+            unsafe_allow_html=True
+        )
+    else:
+        st.markdown(
+            f'''
+            <div class="assistant-message">
+                <div class="message-metadata">
+                    <div class="sender assistant-sender">AI Assistant</div>
+                    <div class="timestamp">{timestamp}</div>
+                </div>
+                {message["content"]}
+            </div>
+            ''', 
+            unsafe_allow_html=True
+        )
+
 st.markdown('</div>', unsafe_allow_html=True)
+
+# User Input Section
+st.markdown('<div class="input-container">', unsafe_allow_html=True)
+prompt = st.chat_input("Type your message here...", key="chat_input")
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Close chat column
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Right column - Additional info
+st.markdown('<div class="info-column">', unsafe_allow_html=True)
+
+# Model information card
+st.markdown(
+    '''
+    <div class="info-card">
+        <div class="info-card-header">Model Information</div>
+        <div class="info-list">
+            <div class="info-item">
+                <span class="info-label">Model</span>
+                <span class="info-value">Llama-3.3</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Version</span>
+                <span class="info-value">70B</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Provider</span>
+                <span class="info-value">Groq</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Max Tokens</span>
+                <span class="info-value">4,096</span>
+            </div>
+        </div>
+    </div>
+    ''',
+    unsafe_allow_html=True
+)
+
+# Session information card
+st.markdown(
+    f'''
+    <div class="info-card">
+        <div class="info-card-header">Session</div>
+        <div class="info-list">
+            <div class="info-item">
+                <span class="info-label">Messages</span>
+                <span class="info-value">{st.session_state.message_count}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Started</span>
+                <span class="info-value">{current_time}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Date</span>
+                <span class="info-value">{current_date}</span>
+            </div>
+        </div>
+    </div>
+    ''',
+    unsafe_allow_html=True
+)
+
+# Capabilities information card
+st.markdown(
+    '''
+    <div class="info-card">
+        <div class="info-card-header">Capabilities</div>
+        <div class="info-list">
+            <div class="info-item">
+                <span class="info-label">Data Analysis</span>
+                <span class="info-value">✓</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Content Creation</span>
+                <span class="info-value">✓</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Code Assistance</span>
+                <span class="info-value">✓</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Problem Solving</span>
+                <span class="info-value">✓</span>
+            </div>
+        </div>
+    </div>
+    ''',
+    unsafe_allow_html=True
+)
+
+# Close info column
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Close main content div
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Check if there's a prompt value from sidebar buttons
+if "prompt_value" in st.session_state and st.session_state.prompt_value:
+    prompt = st.session_state.prompt_value
+    # Clear the value after using it
+    st.session_state.prompt_value = None
 
 if prompt:
     # Get current time
-    current_time = datetime.now().strftime("%I:%M %p")
+    current_time = datetime.now().strftime("%H:%M")
     
     # Display user message
     st.session_state.messages.append({
@@ -484,18 +629,18 @@ if prompt:
     st.session_state.messages.append({
         "role": "assistant", 
         "content": response,
-        "timestamp": datetime.now().strftime("%I:%M %p")
+        "timestamp": datetime.now().strftime("%H:%M")
     })
     st.session_state.message_count += 1
     
-    # Removed experimental_rerun() - Streamlit will automatically rerun
-    # when the session state changes
+    # Force a rerun to display the updated conversation
+    st.rerun()
 
 # Footer
 st.markdown(
     '''
     <div class="footer">
-        Powered by Groq | Llama-3.3-70B | Created with ❤️ using Streamlit
+        Enterprise AI Assistant | Powered by Groq | © 2025 Your Company Name
     </div>
     ''', 
     unsafe_allow_html=True

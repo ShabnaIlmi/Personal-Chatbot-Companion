@@ -20,7 +20,7 @@ def get_base64_encoded_image(image_path):
 # Try to get background image - with fallback
 try:
     # Define the image path
-    image_path = os.path.join("assets", "background.jpg")
+    image_path = os.path.join("assets", "images", "background.jpg")
     # Get base64 encoded image
     img_data = get_base64_encoded_image(image_path)
     background_style = f"""

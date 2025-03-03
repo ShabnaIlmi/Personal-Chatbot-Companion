@@ -76,103 +76,158 @@ st.markdown(
         /* Header Styling */
         .header-container {{
             text-align: center;
-            padding: 20px 0 15px 0;
-            margin-bottom: 20px;
-            background-color: black;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(108, 99, 255, 0.1);
+            padding: 30px 0 25px 0;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, {primary_color}, {secondary_color});
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(108, 99, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }}
+        
+        .header-container::before {{
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 10%, transparent 10.5%),
+                        radial-gradient(circle, rgba(255,255,255,0.1) 10%, transparent 10.5%);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            transform: rotate(45deg);
+            z-index: 1;
         }}
         
         .header-title {{
-            font-size: 1.8rem;
+            font-size: 2.2rem;
             font-weight: 700;
-            color: black;
+            color: white;
             margin: 0;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }}
         
         .header-emoji {{
-            font-size: 1.8rem;
+            font-size: 2.2rem;
             margin: 0 5px;
+            display: inline-block;
+            animation: pulse 2s infinite;
+        }}
+        
+        @keyframes pulse {{
+            0% {{ transform: scale(1); }}
+            50% {{ transform: scale(1.1); }}
+            100% {{ transform: scale(1); }}
         }}
         
         .header-subtitle {{
-            font-size: 0.9rem;
-            color: {text_color};
-            opacity: 0.8;
-            margin-top: 5px;
+            font-size: 1.1rem;
+            color: white;
+            opacity: 0.9;
+            margin-top: 8px;
+            position: relative;
+            z-index: 2;
         }}
         
         /* Stats bar styling */
         .stats-container {{
             display: flex;
             justify-content: center;
-            gap: 20px;
-            margin-bottom: 20px;
-            padding: 10px 0;
+            gap: 25px;
+            margin-bottom: 30px;
+            padding: 15px;
             border-radius: 12px;
+            background-color: white;
+            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.1);
         }}
 
         .stat-item {{
             display: flex;
             align-items: center;
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             background-color: {tertiary_color};
-            padding: 8px 15px;
-            border-radius: 20px;
+            padding: 10px 18px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }}
+        
+        .stat-item:hover {{
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(108, 99, 255, 0.2);
         }}
 
         .stat-label {{
-            margin-right: 5px;
+            margin-right: 8px;
             color: {text_color};
             opacity: 0.7;
         }}
 
         .stat-value {{
             font-weight: 600;
-            color: black;
+            color: {primary_color};
         }}
             
         /* Chat Container Styling */
         .chat-container {{
             background-color: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(108, 99, 255, 0.1);
-            margin-bottom: 20px;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(108, 99, 255, 0.12);
+            margin-bottom: 25px;
             height: 60vh;
             overflow-y: auto;
+            background-image: 
+                linear-gradient(rgba(240, 238, 255, 0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(240, 238, 255, 0.3) 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-position: -1px -1px;
         }}
         
         /* User's message styling */
         .user-message {{
-            background-color: {primary_color};
+            background: linear-gradient(135deg, {primary_color}, {secondary_color});
             border-radius: 18px 18px 0 18px;
-            padding: 12px 16px;
-            margin-bottom: 15px;
-            font-size: 0.95rem;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            font-size: 1rem;
             color: white;
-            box-shadow: 0 2px 5px rgba(108, 99, 255, 0.2);
+            box-shadow: 0 5px 15px rgba(108, 99, 255, 0.2);
             align-self: flex-end;
             max-width: 85%;
             word-wrap: break-word;
             position: relative;
             margin-left: auto;
+            animation: slideInRight 0.3s ease-out;
+        }}
+        
+        @keyframes slideInRight {{
+            from {{ transform: translateX(20px); opacity: 0; }}
+            to {{ transform: translateX(0); opacity: 1; }}
         }}
         
         /* Assistant's message styling */
         .assistant-message {{
             background-color: {tertiary_color};
             border-radius: 18px 18px 18px 0;
-            padding: 12px 16px;
-            margin-bottom: 15px;
-            font-size: 0.95rem;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            font-size: 1rem;
             color: {text_color};
-            box-shadow: 0 2px 5px rgba(108, 99, 255, 0.1);
+            box-shadow: 0 5px 15px rgba(108, 99, 255, 0.1);
             align-self: flex-start;
             max-width: 85%;
             word-wrap: break-word;
             position: relative;
             margin-right: auto;
+            animation: slideInLeft 0.3s ease-out;
+        }}
+        
+        @keyframes slideInLeft {{
+            from {{ transform: translateX(-20px); opacity: 0; }}
+            to {{ transform: translateX(0); opacity: 1; }}
         }}
         
         /* Message metadata styling */
@@ -180,13 +235,13 @@ st.markdown(
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 6px;
+            margin-bottom: 10px;
         }}
         
         /* Sender styling */
         .sender {{
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
         }}
         
         .user-sender {{
@@ -195,11 +250,20 @@ st.markdown(
         
         .assistant-sender {{
             color: {primary_color};
+            display: flex;
+            align-items: center;
+        }}
+        
+        .assistant-sender::before {{
+            content: "✨";
+            margin-right: 5px;
+            font-size: 0.85rem;
         }}
         
         /* Timestamp styling */
         .timestamp {{
-            font-size: 0.75rem;
+            font-size: 0.8rem;
+            font-style: italic;
         }}
         
         .user-timestamp {{
@@ -214,17 +278,17 @@ st.markdown(
         .typing-indicator {{
             background-color: {tertiary_color};
             border-radius: 18px 18px 18px 0;
-            padding: 15px;
-            margin-bottom: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
             width: fit-content;
         }}
         
         .typing-indicator .dot {{
-            height: 8px;
-            width: 8px;
-            margin: 0 2px;
+            height: 10px;
+            width: 10px;
+            margin: 0 3px;
             background-color: {primary_color};
             border-radius: 50%;
             opacity: 0.6;
@@ -244,25 +308,26 @@ st.markdown(
         
         @keyframes bounce {{
             0%, 100% {{ transform: translateY(0); opacity: 0.6; }}
-            50% {{ transform: translateY(-5px); opacity: 0.9; }}
+            50% {{ transform: translateY(-8px); opacity: 0.9; }}
         }}
         
         /* Input area styling */
         .input-container {{
             background-color: white;
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(108, 99, 255, 0.1);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(108, 99, 255, 0.12);
             display: flex;
             align-items: center;
+            position: relative;
         }}
         
         /* Input Styling */
         .stTextInput input, .stChatInput input {{
-            border-radius: 25px !important;
+            border-radius: 50px !important;
             border: 2px solid {tertiary_color} !important;
-            padding: 12px 20px !important;
-            font-size: 0.95rem !important;
+            padding: 15px 25px !important;
+            font-size: 1rem !important;
             color: {text_color} !important;
             box-shadow: none !important;
             transition: all 0.3s ease !important;
@@ -270,17 +335,30 @@ st.markdown(
         
         .stTextInput input:focus, .stChatInput input:focus {{
             border-color: {primary_color} !important;
-            box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.1) !important;
+            box-shadow: 0 0 0 5px rgba(108, 99, 255, 0.1) !important;
+            transform: translateY(-2px) !important;
         }}
         
         /* Footer styling */
         .footer {{
             text-align: center;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             color: {text_color};
             opacity: 0.7;
-            padding: 15px 0;
-            margin-top: 20px;
+            padding: 20px 0;
+            margin-top: 30px;
+            position: relative;
+        }}
+        
+        .footer::before {{
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(to right, transparent, {primary_color}, transparent);
         }}
         
         /* Hide Streamlit branding */
@@ -290,21 +368,22 @@ st.markdown(
         /* Code block styling */
         code {{
             border-radius: 4px;
-            padding: 2px 5px;
+            padding: 3px 6px;
             background-color: {tertiary_color};
             font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-            font-size: 0.85em;
+            font-size: 0.9em;
             color: {primary_color};
         }}
         
         pre {{
             background-color: {tertiary_color};
             border-radius: 8px;
-            padding: 12px;
+            padding: 15px;
             overflow-x: auto;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
         }}
         
-        /* Sidebar styling */
+        /* Sidebar styling - KEEPING AS IS */
         .css-1cypcdb, .css-163ttbj, .css-1ope8sv {{
             background-color: white;
         }}

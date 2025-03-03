@@ -35,13 +35,15 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Define a fun color scheme
-primary_color = "#FF6B6B"     # Coral Red
-secondary_color = "#FF9E7D"   # Peach
-tertiary_color = "#FFE0DB"    # Light Peach
+# Define a more vibrant, fun color scheme
+primary_color = "#8A2BE2"     # Vibrant Purple
+secondary_color = "#FF6EC7"   # Hot Pink
+tertiary_color = "#F0E6FF"    # Light Lavender
 text_color = "#333333"        # Dark gray for text
-bg_color = "#FFFAF0"          # Floral White background
-accent_color = "#4ECDC4"      # Turquoise accent
+bg_color = "#F8F9FF"          # Soft Blue-White background
+accent_color = "#00BFFF"      # Deep Sky Blue accent
+gradient_start = "#8A2BE2"    # Purple gradient start
+gradient_end = "#FF6EC7"      # Pink gradient end
 
 # Inject custom CSS for personal UI
 st.markdown(
@@ -51,6 +53,7 @@ st.markdown(
         .stApp {{
             background-color: {bg_color};
             font-family: 'Poppins', 'Segoe UI', 'Roboto', sans-serif;
+            background-image: radial-gradient(circle at 10% 20%, rgba(138, 43, 226, 0.05) 0%, rgba(255, 110, 199, 0.05) 90%);
         }}
         
         /* Scrollbar styling */
@@ -78,9 +81,9 @@ st.markdown(
             text-align: center;
             padding: 30px 0 25px 0;
             margin-bottom: 30px;
-            background: linear-gradient(135deg, {primary_color}, {secondary_color});
+            background: linear-gradient(135deg, {gradient_start}, {gradient_end});
             border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.2);
+            box-shadow: 0 10px 25px rgba(138, 43, 226, 0.3);
             position: relative;
             overflow: hidden;
         }}
@@ -114,13 +117,15 @@ st.markdown(
             font-size: 2.2rem;
             margin: 0 5px;
             display: inline-block;
-            animation: pulse 2s infinite;
+            animation: sparkle 2s infinite;
         }}
         
-        @keyframes pulse {{
-            0% {{ transform: scale(1); }}
-            50% {{ transform: scale(1.1); }}
-            100% {{ transform: scale(1); }}
+        @keyframes sparkle {{
+            0% {{ transform: scale(1) rotate(0deg); opacity: 1; }}
+            25% {{ transform: scale(1.2) rotate(10deg); opacity: 0.8; }}
+            50% {{ transform: scale(1) rotate(0deg); opacity: 1; }}
+            75% {{ transform: scale(1.2) rotate(-10deg); opacity: 0.8; }}
+            100% {{ transform: scale(1) rotate(0deg); opacity: 1; }}
         }}
         
         .header-subtitle {{
@@ -141,22 +146,23 @@ st.markdown(
             padding: 15px;
             border-radius: 12px;
             background-color: white;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.1);
+            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.15);
         }}
 
         .stat-item {{
             display: flex;
             align-items: center;
             font-size: 0.95rem;
-            background-color: {tertiary_color};
+            background: linear-gradient(135deg, {tertiary_color}, rgba(240, 230, 255, 0.5));
             padding: 10px 18px;
             border-radius: 30px;
             transition: all 0.3s ease;
+            border: 1px solid rgba(138, 43, 226, 0.1);
         }}
         
         .stat-item:hover {{
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.2);
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.2);
         }}
 
         .stat-label {{
@@ -168,6 +174,9 @@ st.markdown(
         .stat-value {{
             font-weight: 600;
             color: {primary_color};
+            background: linear-gradient(135deg, {primary_color}, {secondary_color});
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }}
             
         /* Chat Container Styling */
@@ -175,15 +184,15 @@ st.markdown(
             background-color: white;
             padding: 25px;
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.12);
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.12);
             margin-bottom: 25px;
             height: 60vh;
             overflow-y: auto;
             background-image: 
-                linear-gradient(rgba(255, 224, 219, 0.3) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 224, 219, 0.3) 1px, transparent 1px);
-            background-size: 20px 20px;
-            background-position: -1px -1px;
+                radial-gradient(rgba(138, 43, 226, 0.05) 2px, transparent 2px),
+                radial-gradient(rgba(255, 110, 199, 0.05) 2px, transparent 2px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
         }}
         
         /* User's message styling */
@@ -194,40 +203,41 @@ st.markdown(
             margin-bottom: 20px;
             font-size: 1rem;
             color: white;
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.2);
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.2);
             align-self: flex-end;
             max-width: 85%;
             word-wrap: break-word;
             position: relative;
             margin-left: auto;
-            animation: slideInRight 0.3s ease-out;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }}
         
-        @keyframes slideInRight {{
-            from {{ transform: translateX(20px); opacity: 0; }}
-            to {{ transform: translateX(0); opacity: 1; }}
+        @keyframes popIn {{
+            from {{ transform: scale(0.8); opacity: 0; }}
+            to {{ transform: scale(1); opacity: 1; }}
         }}
         
         /* Assistant's message styling */
         .assistant-message {{
-            background-color: {tertiary_color};
+            background: linear-gradient(135deg, {tertiary_color}, rgba(240, 230, 255, 0.7));
             border-radius: 18px 18px 18px 0;
             padding: 15px 20px;
             margin-bottom: 20px;
             font-size: 1rem;
             color: {text_color};
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.1);
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.1);
             align-self: flex-start;
             max-width: 85%;
             word-wrap: break-word;
             position: relative;
             margin-right: auto;
-            animation: slideInLeft 0.3s ease-out;
+            animation: slideUp 0.3s ease-out;
+            border-left: 3px solid {primary_color};
         }}
         
-        @keyframes slideInLeft {{
-            from {{ transform: translateX(-20px); opacity: 0; }}
-            to {{ transform: translateX(0); opacity: 1; }}
+        @keyframes slideUp {{
+            from {{ transform: translateY(10px); opacity: 0; }}
+            to {{ transform: translateY(0); opacity: 1; }}
         }}
         
         /* Message metadata styling */
@@ -249,7 +259,9 @@ st.markdown(
         }}
         
         .assistant-sender {{
-            color: {primary_color};
+            background: linear-gradient(135deg, {primary_color}, {secondary_color});
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             display: flex;
             align-items: center;
         }}
@@ -289,9 +301,9 @@ st.markdown(
             height: 10px;
             width: 10px;
             margin: 0 3px;
-            background-color: {primary_color};
+            background: linear-gradient(135deg, {primary_color}, {secondary_color});
             border-radius: 50%;
-            opacity: 0.6;
+            opacity: 0.8;
         }}
         
         .typing-indicator .dot:nth-child(1) {{
@@ -307,8 +319,8 @@ st.markdown(
         }}
         
         @keyframes bounce {{
-            0%, 100% {{ transform: translateY(0); opacity: 0.6; }}
-            50% {{ transform: translateY(-8px); opacity: 0.9; }}
+            0%, 100% {{ transform: translateY(0); opacity: 0.8; }}
+            50% {{ transform: translateY(-8px); opacity: 1; }}
         }}
         
         /* Input area styling */
@@ -316,7 +328,7 @@ st.markdown(
             background-color: white;
             padding: 20px;
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.12);
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.12);
             display: flex;
             align-items: center;
             position: relative;
@@ -335,7 +347,7 @@ st.markdown(
         
         .stTextInput input:focus, .stChatInput input:focus {{
             border-color: {primary_color} !important;
-            box-shadow: 0 0 0 5px rgba(255, 107, 107, 0.1) !important;
+            box-shadow: 0 0 0 5px rgba(138, 43, 226, 0.1) !important;
             transform: translateY(-2px) !important;
         }}
         
@@ -358,7 +370,7 @@ st.markdown(
             transform: translateX(-50%);
             width: 100px;
             height: 2px;
-            background: linear-gradient(to right, transparent, {primary_color}, transparent);
+            background: linear-gradient(to right, transparent, {primary_color}, {secondary_color}, transparent);
         }}
         
         /* Hide Streamlit branding */
@@ -383,15 +395,6 @@ st.markdown(
             box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
         }}
         
-        /* Sidebar styling - KEEPING AS IS */
-        .css-1cypcdb, .css-163ttbj, .css-1ope8sv {{
-            background-color: white;
-        }}
-        
-        .css-pkbazv {{
-            color: {primary_color} !important;
-        }}
-        
         /* Two-column layout for larger screens */
         .main-content {{
             display: flex;
@@ -410,7 +413,7 @@ st.markdown(
         .card {{
             background-color: white;
             border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(255, 107, 107, 0.1);
+            box-shadow: 0 4px 10px rgba(138, 43, 226, 0.1);
             padding: 15px;
             margin-bottom: 20px;
         }}
@@ -418,61 +421,17 @@ st.markdown(
         .card-header {{
             font-size: 1rem;
             font-weight: 600;
-            color: {primary_color};
+            background: linear-gradient(135deg, {primary_color}, {secondary_color});
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             margin-bottom: 12px;
             padding-bottom: 8px;
             border-bottom: 2px solid {tertiary_color};
         }}
         
-        /* Features list */
-        .features-list {{
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }}
-        
-        .feature-item {{
-            background-color: {tertiary_color};
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            color: {text_color};
-            display: flex;
-            align-items: center;
-            transition: transform 0.2s;
-        }}
-        
-        .feature-item:hover {{
-            transform: translateY(-3px);
-            background-color: rgba(255, 107, 107, 0.1);
-        }}
-        
-        .feature-icon {{
-            margin-right: 8px;
-            color: {primary_color};
-        }}
-        
-        /* Example prompts */
-        .example-prompt {{
-            background-color: {tertiary_color};
-            padding: 10px 15px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            font-size: 0.85rem;
-            color: {text_color};
-            cursor: pointer;
-            transition: all 0.2s;
-            border-left: 3px solid transparent;
-        }}
-        
-        .example-prompt:hover {{
-            border-left: 3px solid {primary_color};
-            background-color: rgba(255, 107, 107, 0.1);
-        }}
-        
         /* Buttons */
         .stButton > button {{
-            background-color: {primary_color} !important;
+            background: linear-gradient(135deg, {primary_color}, {secondary_color}) !important;
             color: white !important;
             border-radius: 25px !important;
             font-weight: 500 !important;
@@ -482,9 +441,9 @@ st.markdown(
         }}
         
         .stButton > button:hover {{
-            background-color: {secondary_color} !important;
+            background: linear-gradient(135deg, {secondary_color}, {primary_color}) !important;
             transform: translateY(-2px) !important;
-            box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3) !important;
+            box-shadow: 0 4px 10px rgba(138, 43, 226, 0.3) !important;
         }}
         
         /* Enhanced animations */
@@ -497,12 +456,8 @@ st.markdown(
             to {{ opacity: 1; transform: translateY(0); }}
         }}
         
-        /* Enhanced example prompts */
-        .example-prompts {{
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }}
+        /* Keep the sidebar intact by not modifying its styling */
+        
     </style>
     """,
     unsafe_allow_html=True

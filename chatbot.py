@@ -20,6 +20,11 @@ def chat_qa(prompt):
     # Remove typing indicator
     message_placeholder.empty()
     
+    # Convert response to string if it's not already
+    if hasattr(response, 'text'):
+        return response.text
+    elif not isinstance(response, str):
+        return str(response)
     return response
 
 # Function to encode image to base64
@@ -213,6 +218,44 @@ st.markdown(
             background: linear-gradient(135deg, {primary_color}, {secondary_color});
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }}
+
+        /* Capabilities Grid Styling */
+        .features-grid {{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 10px;
+        }}
+
+        .capability-tile {{
+            background: linear-gradient(135deg, #F0E6FF, rgba(240, 230, 255, 0.5));
+            border-radius: 12px;
+            padding: 15px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s ease;
+            border-left: 3px solid #8A2BE2;
+            cursor: pointer;
+        }}
+
+        .capability-tile:hover {{
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.15);
+            background: linear-gradient(135deg, #F0E6FF, white);
+        }}
+
+        .capability-icon {{
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }}
+
+        .capability-text {{
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #333333;
+            text-align: center;
         }}
         
         .feature-text {{
@@ -687,32 +730,34 @@ with st.sidebar:
     # Card for features
     st.markdown(
         f'''
-        <div class="card">
-            <div class="card-header">My Capabilities</div>
-            <div class="features-list">
-                <div class="feature-item">
-                    <span class="feature-icon">🧠</span>
-                    Answer Questions
+        <div class="sidebar-card">
+            <div class="sidebar-card-header">
+                <span class="feature-icon">✨</span> My Capabilities
+            </div>
+            <div class="features-grid">
+                <div class="capability-tile">
+                    <div class="capability-icon">🧠</div>
+                    <div class="capability-text">Answer Questions</div>
                 </div>
-                <div class="feature-item">
-                    <span class="feature-icon">📝</span>
-                    Write Content
+                <div class="capability-tile">
+                    <div class="capability-icon">📝</div>
+                    <div class="capability-text">Write Content</div>
                 </div>
-                <div class="feature-item">
-                    <span class="feature-icon">💡</span>
-                    Creative Ideas
+                <div class="capability-tile">
+                    <div class="capability-icon">💡</div>
+                    <div class="capability-text">Creative Ideas</div>
                 </div>
-                <div class="feature-item">
-                    <span class="feature-icon">📚</span>
-                    Summarize Text
+                <div class="capability-tile">
+                    <div class="capability-icon">📚</div>
+                    <div class="capability-text">Summarize Text</div>
                 </div>
-                <div class="feature-item">
-                    <span class="feature-icon">🎮</span>
-                    Fun & Games
+                <div class="capability-tile">
+                    <div class="capability-icon">🎮</div>
+                    <div class="capability-text">Fun & Games</div>
                 </div>
-                <div class="feature-item">
-                    <span class="feature-icon">🧩</span>
-                    Solve Problems
+                <div class="capability-tile">
+                    <div class="capability-icon">🧩</div>
+                    <div class="capability-text">Solve Problems</div>
                 </div>
             </div>
         </div>

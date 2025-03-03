@@ -125,7 +125,7 @@ st.markdown(
         
         .header-subtitle {{
             font-size: 1.1rem;
-            color: black;
+            color: white;
             opacity: 0.9;
             margin-top: 8px;
             position: relative;

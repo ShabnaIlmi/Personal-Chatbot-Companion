@@ -395,19 +395,7 @@ st.markdown(
             box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
         }}
         
-        /* Two-column layout for larger screens */
-        .main-content {{
-            display: flex;
-            gap: 20px;
-        }}
-        
-        .chat-column {{
-            flex: 7;
-        }}
-        
-        .info-column {{
-            flex: 3;
-        }}
+        /* Remove the two-column layout causing the white box */
         
         /* Cards styling */
         .card {{
@@ -456,7 +444,48 @@ st.markdown(
             to {{ opacity: 1; transform: translateY(0); }}
         }}
         
-        /* Keep the sidebar intact by not modifying its styling */
+        /* Example prompt styling */
+        .example-prompts {{
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+        }}
+        
+        .example-prompt {{
+            background-color: {tertiary_color};
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-left: 3px solid {primary_color};
+        }}
+        
+        .example-prompt:hover {{
+            background-color: rgba(240, 230, 255, 0.8);
+            transform: translateX(3px);
+            box-shadow: 0 2px 5px rgba(138, 43, 226, 0.1);
+        }}
+        
+        /* Features list styling */
+        .features-list {{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }}
+        
+        .feature-item {{
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }}
+        
+        .feature-icon {{
+            font-size: 1.1rem;
+        }}
         
     </style>
     """,
@@ -479,33 +508,9 @@ current_date = datetime.now().strftime("%A, %b %d")
 with st.sidebar:
     st.markdown(f'<div style="text-align: center; padding: 15px 0;"><h3 style="color: {primary_color};">✨ AI Assistant</h3></div>', unsafe_allow_html=True)
     
-    # Card for suggested prompts
-    st.markdown(
-        f'''
-        <div class="card">
-            <div class="card-header">Try asking me...</div>
-            <div class="example-prompts">
-                <div class="example-prompt" onclick="selectPrompt('Tell me a fun fact about space')">Tell me a fun fact about space</div>
-                <div class="example-prompt" onclick="selectPrompt('What should I cook for dinner?')">What should I cook for dinner?</div>
-                <div class="example-prompt" onclick="selectPrompt('Help me plan my weekend')">Help me plan my weekend</div>
-                <div class="example-prompt" onclick="selectPrompt('Recommend a book to read')">Recommend a book to read</div>
-            </div>
-        </div>
-        
-        <script>
-        function selectPrompt(text) {{
-            const textareas = parent.document.querySelectorAll('textarea');
-            const chatInput = textareas[textareas.length - 1];
-            chatInput.value = text;
-            chatInput.dispatchEvent(new Event('input', {{ bubbles: true }}));
-        }}
-        </script>
-        ''',
-        unsafe_allow_html=True
-    )
+    # Example prompts without JavaScript dependency
+    st.markdown("<div class='card'><div class='card-header'>Try asking me...</div></div>", unsafe_allow_html=True)
     
-    # Example prompt buttons (fallback for the JS version)
-    st.markdown("### Quick Ideas")
     example_prompts = [
         "Tell me a fun fact about space",
         "What should I cook for dinner?",
@@ -513,9 +518,10 @@ with st.sidebar:
         "Recommend a book to read"
     ]
     
-    for prompt in example_prompts:
-        if st.button(prompt, key=f"btn_{prompt}"):
-            st.session_state.prompt_value = prompt
+    # Create buttons that look like the prompt examples
+    for i, prompt in enumerate(example_prompts):
+        if st.button(prompt, key=f"prompt_{i}"):
+            st.session_state.user_prompt = prompt
     
     # Card for features
     st.markdown(
@@ -585,12 +591,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Main content area with two columns for larger screens
-st.markdown('<div class="main-content">', unsafe_allow_html=True)
-
-# Left column - Chat interface
-st.markdown('<div class="chat-column">', unsafe_allow_html=True)
-
 # Welcome message when starting a new conversation
 if not st.session_state.conversation_started:
     st.session_state.conversation_started = True
@@ -643,17 +643,11 @@ st.markdown('<div class="input-container">', unsafe_allow_html=True)
 prompt = st.chat_input("Ask me anything...", key="chat_input")
 st.markdown('</div>', unsafe_allow_html=True)
 
-# Close chat column
-st.markdown('</div>', unsafe_allow_html=True)
-
-# Close main content div
-st.markdown('</div>', unsafe_allow_html=True)
-
 # Check if there's a prompt value from sidebar buttons
-if "prompt_value" in st.session_state and st.session_state.prompt_value:
-    prompt = st.session_state.prompt_value
+if "user_prompt" in st.session_state and st.session_state.user_prompt:
+    prompt = st.session_state.user_prompt
     # Clear the value after using it
-    st.session_state.prompt_value = None
+    st.session_state.user_prompt = None
 
 if prompt:
     # Get current time

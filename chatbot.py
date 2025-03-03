@@ -35,13 +35,13 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Define a cohesive color scheme
-primary_color = "#6C63FF"     # Purple
-secondary_color = "#8A84FF"   # Lighter purple
-tertiary_color = "#F0EEFF"    # Very light purple
+# Define a fun color scheme
+primary_color = "#FF6B6B"     # Coral Red
+secondary_color = "#FF9E7D"   # Peach
+tertiary_color = "#FFE0DB"    # Light Peach
 text_color = "#333333"        # Dark gray for text
-bg_color = "#FCFCFF"          # Off-white with slight purple tint
-accent_color = "#FF9190"      # Soft coral accent
+bg_color = "#FFFAF0"          # Floral White background
+accent_color = "#4ECDC4"      # Turquoise accent
 
 # Inject custom CSS for personal UI
 st.markdown(
@@ -80,7 +80,7 @@ st.markdown(
             margin-bottom: 30px;
             background: linear-gradient(135deg, {primary_color}, {secondary_color});
             border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(108, 99, 255, 0.2);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.2);
             position: relative;
             overflow: hidden;
         }}
@@ -141,7 +141,7 @@ st.markdown(
             padding: 15px;
             border-radius: 12px;
             background-color: white;
-            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.1);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.1);
         }}
 
         .stat-item {{
@@ -156,7 +156,7 @@ st.markdown(
         
         .stat-item:hover {{
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(108, 99, 255, 0.2);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.2);
         }}
 
         .stat-label {{
@@ -175,13 +175,13 @@ st.markdown(
             background-color: white;
             padding: 25px;
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(108, 99, 255, 0.12);
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.12);
             margin-bottom: 25px;
             height: 60vh;
             overflow-y: auto;
             background-image: 
-                linear-gradient(rgba(240, 238, 255, 0.3) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(240, 238, 255, 0.3) 1px, transparent 1px);
+                linear-gradient(rgba(255, 224, 219, 0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 224, 219, 0.3) 1px, transparent 1px);
             background-size: 20px 20px;
             background-position: -1px -1px;
         }}
@@ -194,7 +194,7 @@ st.markdown(
             margin-bottom: 20px;
             font-size: 1rem;
             color: white;
-            box-shadow: 0 5px 15px rgba(108, 99, 255, 0.2);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.2);
             align-self: flex-end;
             max-width: 85%;
             word-wrap: break-word;
@@ -216,7 +216,7 @@ st.markdown(
             margin-bottom: 20px;
             font-size: 1rem;
             color: {text_color};
-            box-shadow: 0 5px 15px rgba(108, 99, 255, 0.1);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.1);
             align-self: flex-start;
             max-width: 85%;
             word-wrap: break-word;
@@ -316,7 +316,7 @@ st.markdown(
             background-color: white;
             padding: 20px;
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(108, 99, 255, 0.12);
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.12);
             display: flex;
             align-items: center;
             position: relative;
@@ -335,7 +335,7 @@ st.markdown(
         
         .stTextInput input:focus, .stChatInput input:focus {{
             border-color: {primary_color} !important;
-            box-shadow: 0 0 0 5px rgba(108, 99, 255, 0.1) !important;
+            box-shadow: 0 0 0 5px rgba(255, 107, 107, 0.1) !important;
             transform: translateY(-2px) !important;
         }}
         
@@ -410,7 +410,7 @@ st.markdown(
         .card {{
             background-color: white;
             border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(108, 99, 255, 0.1);
+            box-shadow: 0 4px 10px rgba(255, 107, 107, 0.1);
             padding: 15px;
             margin-bottom: 20px;
         }}
@@ -444,7 +444,7 @@ st.markdown(
         
         .feature-item:hover {{
             transform: translateY(-3px);
-            background-color: rgba(108, 99, 255, 0.1);
+            background-color: rgba(255, 107, 107, 0.1);
         }}
         
         .feature-icon {{
@@ -467,7 +467,7 @@ st.markdown(
         
         .example-prompt:hover {{
             border-left: 3px solid {primary_color};
-            background-color: rgba(108, 99, 255, 0.1);
+            background-color: rgba(255, 107, 107, 0.1);
         }}
         
         /* Buttons */
@@ -484,7 +484,7 @@ st.markdown(
         .stButton > button:hover {{
             background-color: {secondary_color} !important;
             transform: translateY(-2px) !important;
-            box-shadow: 0 4px 10px rgba(108, 99, 255, 0.3) !important;
+            box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3) !important;
         }}
         
         /* Enhanced animations */
@@ -603,7 +603,7 @@ st.markdown(
     f'''
     <div class="header-container">
         <h1 class="header-title">Personal AI Assistant <span class="header-emoji">✨</span></h1>
-        <p class="header-subtitle" style="color: white;">Your friendly AI companion powered by Llama 3.3</p>
+        <p class="header-subtitle">Your friendly AI companion powered by Llama 3.3</p>
     </div>
     ''', 
     unsafe_allow_html=True

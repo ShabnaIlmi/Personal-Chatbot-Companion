@@ -3,6 +3,7 @@ import streamlit as st
 import os
 import base64
 from datetime import datetime
+import random
 
 # Load API key from Streamlit secrets
 api_key = st.secrets["groq"]["api_key"]
@@ -26,6 +27,26 @@ def chat_qa(prompt):
 def get_base64_encoded_image(image_path):
     with open(image_path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
+
+# Function to generate dynamic placeholder suggestions
+def get_suggestion_placeholder():
+    suggestions = [
+        "Ask me anything...",
+        "What's on your mind?",
+        "How can I help you today?",
+        "I'm here to assist you...",
+        "Tell me what you're looking for...",
+        "Looking for answers? Ask away!",
+        "Ready for your questions...",
+        "Curious about something?",
+        "Need help with a task?",
+        "Wonder about the universe? Ask me!",
+        "Need creative ideas? Let me know!",
+        "What would you like to learn today?",
+        "Need a hand with something?",
+        "Questions or thoughts to share?"
+    ]
+    return random.choice(suggestions)
 
 # Set page config
 st.set_page_config(
@@ -487,6 +508,64 @@ st.markdown(
             font-size: 1.1rem;
         }}
         
+        /* Try asking me feature styling */
+        .try-asking-container {{
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.05), rgba(255, 110, 199, 0.05));
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(138, 43, 226, 0.1);
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.08);
+        }}
+        
+        .try-asking-title {{
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: {primary_color};
+            font-weight: 600;
+        }}
+        
+        .suggestions-grid {{
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }}
+        
+        .suggestion-item {{
+            background: white;
+            padding: 12px 15px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-left: 3px solid {secondary_color};
+            box-shadow: 0 2px 5px rgba(138, 43, 226, 0.08);
+        }}
+        
+        .suggestion-item:hover {{
+            background-color: {tertiary_color};
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(138, 43, 226, 0.15);
+        }}
+        
+        /* Animated placeholder text */
+        .animated-placeholder {{
+            font-size: 1rem;
+            color: rgba(138, 43, 226, 0.6);
+            animation: fadeIn 2s infinite alternate;
+            display: block;
+            margin: 10px 0;
+            padding: 10px 20px;
+            background: rgba(240, 230, 255, 0.5);
+            border-radius: 8px;
+            text-align: center;
+        }}
+        
+        @keyframes fadeIn {{
+            from {{ opacity: 0.6; }}
+            to {{ opacity: 1; }}
+        }}
+        
     </style>
     """,
     unsafe_allow_html=True
@@ -499,6 +578,8 @@ if "conversation_started" not in st.session_state:
     st.session_state.conversation_started = False
 if "message_count" not in st.session_state:
     st.session_state.message_count = 0
+if "current_suggestion" not in st.session_state:
+    st.session_state.current_suggestion = get_suggestion_placeholder()
 
 # Get current time and date
 current_time = datetime.now().strftime("%I:%M %p")
@@ -591,6 +672,41 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# New "Try asking me" section before the chat
+if not st.session_state.messages:
+    st.markdown(
+        f'''
+        <div class="try-asking-container">
+            <div class="try-asking-title">✨ Try asking me about...</div>
+            <div class="suggestions-grid">
+                <div class="suggestion-item" onclick="document.querySelector('.stChatInput input').value = 'How do black holes work?'; document.querySelector('.stChatInput button').click();">
+                    How do black holes work?
+                </div>
+                <div class="suggestion-item" onclick="document.querySelector('.stChatInput input').value = 'Write a short poem about autumn'; document.querySelector('.stChatInput button').click();">
+                    Write a short poem about autumn
+                </div>
+                <div class="suggestion-item" onclick="document.querySelector('.stChatInput input').value = 'Give me a healthy breakfast recipe'; document.querySelector('.stChatInput button').click();">
+                    Give me a healthy breakfast recipe
+                </div>
+                <div class="suggestion-item" onclick="document.querySelector('.stChatInput input').value = 'Explain quantum computing simply'; document.querySelector('.stChatInput button').click();">
+                    Explain quantum computing simply
+                </div>
+                <div class="suggestion-item" onclick="document.querySelector('.stChatInput input').value = 'Help me draft an email to request time off'; document.querySelector('.stChatInput button').click();">
+                    Help me draft an email to request time off
+                </div>
+                <div class="suggestion-item" onclick="document.querySelector('.stChatInput input').value = 'Tell me an interesting historical fact'; document.querySelector('.stChatInput button').click();">
+                    Tell me an interesting historical fact
+                </div>
+            </div>
+            
+            <div class="animated-placeholder">
+                {st.session_state.current_suggestion}
+            </div>
+        </div>
+        ''',
+        unsafe_allow_html=True
+    )
+
 # Welcome message when starting a new conversation
 if not st.session_state.conversation_started:
     st.session_state.conversation_started = True
@@ -638,9 +754,12 @@ for message in st.session_state.messages:
 
 st.markdown('</div>', unsafe_allow_html=True)
 
+# Update the placeholder text for the chat input field
+st.session_state.current_suggestion = get_suggestion_placeholder()
+
 # User Input Section
 st.markdown('<div class="input-container">', unsafe_allow_html=True)
-prompt = st.chat_input("Ask me anything...", key="chat_input")
+prompt = st.chat_input(st.session_state.current_suggestion, key="chat_input")
 st.markdown('</div>', unsafe_allow_html=True)
 
 # Check if there's a prompt value from sidebar buttons
@@ -671,6 +790,9 @@ if prompt:
         "timestamp": datetime.now().strftime("%I:%M %p")
     })
     st.session_state.message_count += 1
+    
+    # Update the placeholder for next time
+    st.session_state.current_suggestion = get_suggestion_placeholder()
     
     # Force a rerun to display the updated conversation
     st.rerun()

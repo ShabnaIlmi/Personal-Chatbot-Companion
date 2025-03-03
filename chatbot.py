@@ -56,7 +56,7 @@ st.markdown(
             background-image: radial-gradient(circle at 10% 20%, rgba(138, 43, 226, 0.05) 0%, rgba(255, 110, 199, 0.05) 90%);
         }}
         
-        /* Scrollbar styling */
+        /* Scrollbar styling - global */
         ::-webkit-scrollbar {{
             width: 8px;
             height: 8px;
@@ -76,14 +76,157 @@ st.markdown(
             background: {primary_color};
         }}
         
+        /* Sidebar enhancements */
+        .css-1d391kg, .css-163ttbj, .css-1wrcr25 {{
+            background-image: linear-gradient(170deg, {primary_color}22, {secondary_color}22);
+            border-right: 1px solid rgba(138, 43, 226, 0.1);
+        }}
+        
+        /* Sidebar header */
+        .sidebar-header {{
+            background: linear-gradient(135deg, {gradient_start}, {gradient_end});
+            margin: -1rem -1rem 1rem -1rem;
+            padding: 2rem 1rem;
+            border-radius: 0 0 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }}
+        
+        .sidebar-header::before {{
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 10%, transparent 10.5%);
+            background-size: 20px 20px;
+            transform: rotate(45deg);
+            z-index: 1;
+            opacity: 0.5;
+        }}
+        
+        .sidebar-title {{
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }}
+        
+        /* Sidebar card styling */
+        .sidebar-card {{
+            background-color: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(138, 43, 226, 0.1);
+            border-left: 4px solid {primary_color};
+            transition: transform 0.3s ease;
+        }}
+        
+        .sidebar-card:hover {{
+            transform: translateY(-3px);
+        }}
+        
+        .sidebar-card-header {{
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid {tertiary_color};
+            color: {primary_color};
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }}
+        
+        /* Example prompt styling */
+        .example-prompts {{
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }}
+        
+        .example-prompt {{
+            background: linear-gradient(135deg, {tertiary_color}, rgba(240, 230, 255, 0.5));
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(138, 43, 226, 0.05);
+            border: 1px solid rgba(138, 43, 226, 0.08);
+            position: relative;
+            padding-left: 25px;
+        }}
+        
+        .example-prompt::before {{
+            content: "💬";
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8rem;
+        }}
+        
+        .example-prompt:hover {{
+            background: linear-gradient(135deg, {tertiary_color}, white);
+            transform: translateX(5px);
+            box-shadow: 0 5px 10px rgba(138, 43, 226, 0.1);
+        }}
+        
+        /* Features list styling */
+        .features-list {{
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }}
+        
+        .feature-item {{
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+            background-color: white;
+            padding: 12px 15px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border-left: 3px solid {primary_color};
+        }}
+        
+        .feature-item:hover {{
+            transform: translateX(5px);
+            background-color: {tertiary_color};
+        }}
+        
+        .feature-icon {{
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, {primary_color}, {secondary_color});
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }}
+        
+        .feature-text {{
+            color: {text_color};
+        }}
+        
         /* Header Styling */
         .header-container {{
             text-align: center;
-            padding: 30px 0 25px 0;
-            margin-bottom: 30px;
+            padding: 35px 0 30px 0;
+            margin-bottom: 35px;
             background: linear-gradient(135deg, {gradient_start}, {gradient_end});
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(138, 43, 226, 0.3);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(138, 43, 226, 0.3);
             position: relative;
             overflow: hidden;
         }}
@@ -104,18 +247,18 @@ st.markdown(
         }}
         
         .header-title {{
-            font-size: 2.2rem;
-            font-weight: 700;
+            font-size: 2.5rem;
+            font-weight: 800;
             color: white;
             margin: 0;
             position: relative;
             z-index: 2;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-shadow: 0 3px 6px rgba(0,0,0,0.2);
         }}
         
         .header-emoji {{
-            font-size: 2.2rem;
-            margin: 0 5px;
+            font-size: 2.5rem;
+            margin: 0 8px;
             display: inline-block;
             animation: sparkle 2s infinite;
         }}
@@ -129,10 +272,10 @@ st.markdown(
         }}
         
         .header-subtitle {{
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: white;
             opacity: 0.9;
-            margin-top: 8px;
+            margin-top: 10px;
             position: relative;
             z-index: 2;
         }}
@@ -141,38 +284,41 @@ st.markdown(
         .stats-container {{
             display: flex;
             justify-content: center;
-            gap: 25px;
-            margin-bottom: 30px;
-            padding: 15px;
-            border-radius: 12px;
+            gap: 30px;
+            margin-bottom: 35px;
+            padding: 5px;
+            border-radius: 16px;
             background-color: white;
-            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.15);
+            box-shadow: 0 8px 25px rgba(138, 43, 226, 0.15);
+            position: relative;
+            transform: translateY(-25px);
         }}
 
         .stat-item {{
             display: flex;
             align-items: center;
-            font-size: 0.95rem;
+            font-size: 1rem;
             background: linear-gradient(135deg, {tertiary_color}, rgba(240, 230, 255, 0.5));
-            padding: 10px 18px;
+            padding: 15px 25px;
             border-radius: 30px;
             transition: all 0.3s ease;
             border: 1px solid rgba(138, 43, 226, 0.1);
         }}
         
         .stat-item:hover {{
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(138, 43, 226, 0.2);
         }}
 
         .stat-label {{
-            margin-right: 8px;
+            margin-right: 10px;
             color: {text_color};
             opacity: 0.7;
+            font-weight: 500;
         }}
 
         .stat-value {{
-            font-weight: 600;
+            font-weight: 700;
             color: {primary_color};
             background: linear-gradient(135deg, {primary_color}, {secondary_color});
             -webkit-background-clip: text;
@@ -182,10 +328,10 @@ st.markdown(
         /* Chat Container Styling */
         .chat-container {{
             background-color: white;
-            padding: 25px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.12);
-            margin-bottom: 25px;
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: 0 15px 40px rgba(138, 43, 226, 0.12);
+            margin-bottom: 30px;
             height: 60vh;
             overflow-y: auto;
             background-image: 
@@ -193,23 +339,37 @@ st.markdown(
                 radial-gradient(rgba(255, 110, 199, 0.05) 2px, transparent 2px);
             background-size: 30px 30px;
             background-position: 0 0, 15px 15px;
+            position: relative;
+        }}
+        
+        .chat-container::after {{
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(to top, white, transparent);
+            pointer-events: none;
+            z-index: 1;
+            border-radius: 0 0 24px 24px;
         }}
         
         /* User's message styling */
         .user-message {{
             background: linear-gradient(135deg, {primary_color}, {secondary_color});
-            border-radius: 18px 18px 0 18px;
-            padding: 15px 20px;
-            margin-bottom: 20px;
-            font-size: 1rem;
+            border-radius: 22px 22px 0 22px;
+            padding: 18px 25px;
+            margin-bottom: 25px;
+            font-size: 1.05rem;
             color: white;
-            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.2);
+            box-shadow: 0 8px 20px rgba(138, 43, 226, 0.2);
             align-self: flex-end;
             max-width: 85%;
             word-wrap: break-word;
             position: relative;
             margin-left: auto;
-            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }}
         
         @keyframes popIn {{
@@ -220,23 +380,24 @@ st.markdown(
         /* Assistant's message styling */
         .assistant-message {{
             background: linear-gradient(135deg, {tertiary_color}, rgba(240, 230, 255, 0.7));
-            border-radius: 18px 18px 18px 0;
-            padding: 15px 20px;
-            margin-bottom: 20px;
-            font-size: 1rem;
+            border-radius: 22px 22px 22px 0;
+            padding: 18px 25px;
+            margin-bottom: 25px;
+            font-size: 1.05rem;
+            line-height: 1.6;
             color: {text_color};
-            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.1);
+            box-shadow: 0 8px 20px rgba(138, 43, 226, 0.1);
             align-self: flex-start;
             max-width: 85%;
             word-wrap: break-word;
             position: relative;
             margin-right: auto;
-            animation: slideUp 0.3s ease-out;
-            border-left: 3px solid {primary_color};
+            animation: slideUp 0.4s ease-out;
+            border-left: 4px solid {primary_color};
         }}
         
         @keyframes slideUp {{
-            from {{ transform: translateY(10px); opacity: 0; }}
+            from {{ transform: translateY(15px); opacity: 0; }}
             to {{ transform: translateY(0); opacity: 1; }}
         }}
         
@@ -245,7 +406,7 @@ st.markdown(
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }}
         
         /* Sender styling */

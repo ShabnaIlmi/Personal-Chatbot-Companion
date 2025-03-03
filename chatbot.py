@@ -603,7 +603,7 @@ st.markdown(
     f'''
     <div class="header-container">
         <h1 class="header-title">Personal AI Assistant <span class="header-emoji">✨</span></h1>
-        <p class="header-subtitle">Your friendly AI companion powered by Llama 3.3</p>
+        <p class="header-subtitle" style="color: white;">Your friendly AI companion powered by Llama 3.3</p>
     </div>
     ''', 
     unsafe_allow_html=True

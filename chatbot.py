@@ -881,6 +881,349 @@ if prompt:
     # Force a rerun to display the updated conversation
     st.rerun()
 
+import streamlit as st
+from pymongo import MongoClient
+from pymongo.server_api import ServerApi
+from bson.objectid import ObjectId
+import bcrypt
+import re
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+class MongoDBAtlasConnection:
+    def __init__(self):
+        # Retrieve MongoDB connection string from environment variable
+        self.connection_string = os.getenv('MONGODB_ATLAS_CONNECTION_STRING')
+        
+        # Validate connection string
+        if not self.connection_string:
+            raise ValueError("MongoDB Atlas connection string not found in environment variables")
+        
+        try:
+            # Initialize the MongoDB client
+            self.client = MongoClient(
+                self.connection_string, 
+                server_api=ServerApi('1')  # Use the latest server API version
+            )
+            
+            # Select the database
+            self.db = self.client[os.getenv('MONGODB_DATABASE', 'AIAssistant')]
+            
+            # Define collections
+            self.users_collection = self.db['users']
+            self.conversations_collection = self.db['conversations']
+            self.messages_collection = self.db['messages']
+        
+        except Exception as e:
+            st.error(f"Error connecting to MongoDB Atlas: {e}")
+            raise
+
+    def hash_password(self, password):
+        """
+        Hash password using bcrypt
+        """
+        # Generate a salt and hash the password
+        salt = bcrypt.gensalt()
+        hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
+        return hashed
+
+    def verify_password(self, stored_password, provided_password):
+        """
+        Verify provided password against stored hash
+        """
+        return bcrypt.checkpw(
+            provided_password.encode('utf-8'), 
+            stored_password
+        )
+
+    def validate_email(self, email):
+        """
+        Validate email format
+        """
+        email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        return re.match(email_regex, email) is not None
+
+    def register_user(self, username, email, password):
+        """
+        Register a new user in MongoDB
+        """
+        # Check if user already exists
+        existing_user = self.users_collection.find_one({
+            '$or': [
+                {'username': username},
+                {'email': email}
+            ]
+        })
+        
+        if existing_user:
+            return False, "Username or email already exists"
+        
+        # Validate email
+        if not self.validate_email(email):
+            return False, "Invalid email format"
+        
+        # Hash the password
+        hashed_password = self.hash_password(password)
+        
+        # Create user document
+        user_data = {
+            'username': username,
+            'email': email,
+            'password': hashed_password,
+            'created_at': datetime.now(),
+            'last_login': None,
+            'profile': {
+                'avatar': None,
+                'bio': None
+            },
+            'preferences': {
+                'theme': 'light',
+                'notifications': True
+            }
+        }
+        
+        # Insert user
+        result = self.users_collection.insert_one(user_data)
+        
+        return True, str(result.inserted_id)
+
+    def authenticate_user(self, username, password):
+        """
+        Authenticate user credentials
+        """
+        # Find user by username
+        user = self.users_collection.find_one({'username': username})
+        
+        if user:
+            # Verify password
+            if self.verify_password(user['password'], password):
+                # Update last login
+                self.users_collection.update_one(
+                    {'_id': user['_id']},
+                    {'$set': {'last_login': datetime.now()}}
+                )
+                return True, user
+            else:
+                return False, "Invalid password"
+        
+        return False, "User not found"
+
+    def save_conversation(self, user_id, messages):
+        """
+        Save conversation to MongoDB
+        """
+        conversation = {
+            'user_id': user_id,
+            'messages': messages,
+            'created_at': datetime.now()
+        }
+        
+        result = self.conversations_collection.insert_one(conversation)
+        return str(result.inserted_id)
+
+    def get_user_conversations(self, user_id):
+        """
+        Retrieve user's conversation history
+        """
+        conversations = list(self.conversations_collection.find(
+            {'user_id': user_id}
+        ).sort('created_at', -1).limit(10))
+        
+        return conversations
+
+    def update_user_preferences(self, user_id, preferences):
+        """
+        Update user preferences
+        """
+        result = self.users_collection.update_one(
+            {'_id': ObjectId(user_id)},
+            {'$set': {'preferences': preferences}}
+        )
+        return result.modified_count > 0
+
+# Streamlit Authentication Pages
+def mongodb_signup_page(mongo_conn):
+    """
+    Signup page using MongoDB
+    """
+    st.markdown(
+        f'''
+        <div class="header-container">
+            <h1 class="header-title">Create Your Account <span class="header-emoji">🚀</span></h1>
+            <p class="header-subtitle">Join our AI Assistant community</p>
+        </div>
+        ''', 
+        unsafe_allow_html=True
+    )
+    
+    with st.form("signup_form"):
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            username = st.text_input("Choose a Username", placeholder="Enter your username")
+        
+        with col2:
+            email = st.text_input("Email Address", placeholder="Enter your email")
+        
+        password = st.text_input("Create Password", type="password", placeholder="Choose a strong password")
+        confirm_password = st.text_input("Confirm Password", type="password", placeholder="Confirm your password")
+        
+        submit_button = st.form_submit_button("Sign Up")
+        
+        if submit_button:
+            # Validation checks
+            if not username or not email or not password:
+                st.error("Please fill in all fields")
+                return False
+            
+            if password != confirm_password:
+                st.error("Passwords do not match")
+                return False
+            
+            # Attempt to register user
+            registration_result, message = mongo_conn.register_user(username, email, password)
+            
+            if registration_result:
+                st.success("Account created successfully! Please log in.")
+                st.session_state.page = 'login'
+                st.experimental_rerun()
+            else:
+                st.error(message)
+
+def mongodb_login_page(mongo_conn):
+    """
+    Login page using MongoDB
+    """
+    st.markdown(
+        f'''
+        <div class="header-container">
+            <h1 class="header-title">Welcome Back! <span class="header-emoji">👋</span></h1>
+            <p class="header-subtitle">Log in to your AI Assistant</p>
+        </div>
+        ''', 
+        unsafe_allow_html=True
+    )
+    
+    with st.form("login_form"):
+        username = st.text_input("Username", placeholder="Enter your username")
+        password = st.text_input("Password", type="password", placeholder="Enter your password")
+        
+        submit_button = st.form_submit_button("Log In")
+        
+        if submit_button:
+            # Authenticate user
+            auth_result, user_or_error = mongo_conn.authenticate_user(username, password)
+            
+            if auth_result:
+                # Store user information in session state
+                st.session_state.logged_in = True
+                st.session_state.user = {
+                    'id': str(user_or_error['_id']),
+                    'username': user_or_error['username']
+                }
+                
+                # Redirect to main app
+                st.experimental_rerun()
+            else:
+                st.error(user_or_error)
+
+# Main Authentication Flow
+def mongodb_authentication_flow():
+    """
+    Manage authentication state and pages with MongoDB
+    """
+    # Initialize MongoDB connection
+    try:
+        mongo_conn = MongoDBAtlasConnection()
+    except ValueError as e:
+        st.error(str(e))
+        return
+    
+    # Initialize session state for authentication
+    if 'logged_in' not in st.session_state:
+        st.session_state.logged_in = False
+    
+    if 'page' not in st.session_state:
+        st.session_state.page = 'login'
+    
+    # Determine which page to show
+    if not st.session_state.logged_in:
+        if st.session_state.page == 'login':
+            mongodb_login_page(mongo_conn)
+        else:
+            mongodb_signup_page(mongo_conn)
+    else:
+        # Main application logic
+        main_application(mongo_conn)
+
+# Requirements and Setup Instructions
+"""
+Requirements:
+1. Install required packages:
+   pip install pymongo python-dotenv bcrypt streamlit
+
+2. Create a .env file in your project root with:
+   MONGODB_ATLAS_CONNECTION_STRING=your_connection_string
+   MONGODB_DATABASE=AIAssistant
+
+3. Enable network access in MongoDB Atlas
+   - Whitelist your IP address
+   - Create a database user
+   - Ensure connection string is correctly formatted
+
+4. Recommended MongoDB Atlas Setup:
+   - Create a cluster
+   - Set up database user
+   - Configure network access
+   - Copy connection string
+"""
+
+# Optional: Logging Decorator
+def log_database_operation(func):
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            st.error(f"Database Operation Error: {e}")
+            # Optional: Implement logging
+            return None
+    return wrapper
+
+# Sample Usage in Main Application
+def main_application(mongo_conn):
+    """
+    Main application logic after login
+    """
+    st.title(f"Welcome, {st.session_state.user['username']}!")
+    
+    # Logout functionality
+    if st.sidebar.button("Logout"):
+        st.session_state.logged_in = False
+        st.session_state.user = None
+        st.experimental_rerun()
+    
+    # Example: Retrieve user conversations
+    conversations = mongo_conn.get_user_conversations(
+        st.session_state.user['id']
+    )
+    
+    # Display conversation history
+    st.subheader("Recent Conversations")
+    for conv in conversations:
+        st.write(f"Conversation on {conv['created_at']}")
+        # Additional conversation details
+
+# Main Execution
+def main():
+    st.set_page_config(page_title="AI Assistant", page_icon="✨")
+    mongodb_authentication_flow()
+
+if __name__ == "__main__":
+    main()    
+
 # Footer
 st.markdown(
     f'''

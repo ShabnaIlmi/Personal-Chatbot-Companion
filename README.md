@@ -7,7 +7,7 @@ The **Personal AI Companion Chatbot** is an advanced AI-powered conversational a
 - **Conversational AI**: Leverages Llama 3.3-70B-Versatile for intelligent and context-aware responses.
 - **API Integration**: Utilizes the Groq API for processing and delivering AI-generated replies.
 - **Personalization**: Adapts to user inputs, maintaining context for a more natural conversation flow.
-- **Web-based Interface**: Hosted on **Streamlit**, providing an intuitive and user-friendly chat experience.
+- **Web-based Interface**: Hosted on **Streamlit**, providing an intuitive and user-friendly chat experience.s
 - **Real-time Processing**: Delivers responses with minimal latency for smooth interactions.
 
 ## Live Demo
@@ -51,6 +51,5 @@ If you'd like to run your own instance of the chatbot, follow these steps:
 ## License
 This project is open-source. Feel free to modify and improve it as needed.
 
----
-For any questions or issues, feel free to reach out!
+![image](https://github.com/user-attachments/assets/efc6bb93-6008-4730-a178-052ac487e103)
 
